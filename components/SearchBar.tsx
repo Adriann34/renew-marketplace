@@ -28,16 +28,16 @@ export function SearchBar() {
     <form
       onSubmit={handleSubmit}
       role="search"
-      className="hidden md:flex flex-1 max-w-sm items-center border border-line bg-bg-inset px-3 h-9 focus-within:border-ink-dim transition-colors"
+      className="market-search"
     >
-      <span className="text-ink-dim text-xs font-mono">⌕</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></svg>
       <input
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search Renew"
+        placeholder="Search hardware…"
         aria-label="Search listings"
-        className="flex-1 bg-transparent px-2 text-[13px] text-ink placeholder:text-ink-dim outline-none [&::-webkit-search-cancel-button]:appearance-none"
+        className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-ink-dim outline-none"
       />
     </form>
   );

@@ -1,81 +1,36 @@
 import Link from "next/link";
 import Image from "next/image";
-import { DiagnosticTag } from "@/components/DiagnosticTag";
-import { formatMoney } from "@/lib/format";
 
 export function Hero() {
   return (
-    <section className="border-b border-line">
-      <div className="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center">
-        {/* nudged up slightly — optically the heading's line-height makes a
-            true center read top-heavy against the card */}
-        <div className="lg:relative lg:-top-4">
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber mb-5">
-            Trust through Evidence
+    <section className="home-hero">
+      <div className="market-container hero-layout">
+        <div className="hero-copy">
+          <p className="section-eyebrow">The used hardware marketplace</p>
+          <h1>Good hardware.<br /><span>A new beginning.</span></h1>
+          <p className="hero-description">
+            Buy and sell used PC hardware with clear specs, condition details,
+            and seller photos.
           </p>
-          <h1 className="font-display font-semibold text-[44px] md:text-[54px] leading-[1.05] mb-6">
-            Marketplace
-            <br />
-            you can
-            <br />
-            actually trust.
-          </h1>
-          <p className="text-ink-dim text-[15px] leading-relaxed max-w-md mb-8">
-            Worried about buying used? Renew is the marketplace for you.
-            Buy with confidence using verified listings and the proof you need.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/browse"
-              className="bg-amber text-bg-inset text-[14px] font-medium px-6 h-11 flex items-center rounded-(--radius-tag) hover:bg-amber/90 transition-colors"
-            >
-              Browse listings
-            </Link>
-            <Link
-              href="/sell"
-              className="border border-line text-[14px] px-6 h-11 flex items-center rounded-(--radius-tag) hover:border-ink-dim transition-colors"
-            >
-              Sell your hardware
-            </Link>
+          <div className="hero-actions">
+            <Link href="/browse" className="market-button market-button-primary">Browse hardware <span aria-hidden>↗</span></Link>
+            <Link href="/sell" className="market-button market-button-secondary">Sell your hardware</Link>
           </div>
+          <p className="hero-footnote">A second life for your next upgrade.</p>
         </div>
-
-        <div className="border border-line bg-bg-elevated rounded-lg overflow-hidden lg:mr-8 xl:mr-14">
-          <div className="relative aspect-video border-b border-line overflow-hidden bg-bg-inset">
+        <figure className="hero-product">
+          <div className="hero-product-image">
             <Image
               src="/RTX_4090_home_page.png"
-              alt="RTX 4090 Founders Edition"
+              alt="NVIDIA RTX 4090 Founders Edition graphics card on a dark surface"
               fill
-              sizes="(max-width: 1024px) 100vw, 640px"
+              sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1023px) 48vw, 560px"
               className="object-cover"
               priority
             />
-            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 bg-bg-elevated/90 border border-pass/40 text-pass text-[10px] font-mono uppercase tracking-wide px-2 py-1 rounded-(--radius-tag)">
-              <span className="w-1.5 h-1.5 rounded-full bg-pass" />
-              Verified
-            </span>
           </div>
-          <div className="p-5 space-y-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-ink-dim mb-1">
-                  GPU · 24GB GDDR6X
-                </p>
-                <h3 className="font-display font-medium text-lg">
-                  RTX 4090 Founders Edition
-                </h3>
-              </div>
-              <p className="font-mono text-amber text-lg">{formatMoney(1450, "USD")}</p>
-            </div>
-            <DiagnosticTag
-              grade="A"
-              benchmarkScore={35120}
-              benchmarkLabel="Time Spy"
-              wattageDraw={411}
-              bootVerified={true}
-            />
-          </div>
-        </div>
+          <figcaption><span>Built for the next build.</span><span>RTX 4090 · Founders Edition</span></figcaption>
+        </figure>
       </div>
     </section>
   );

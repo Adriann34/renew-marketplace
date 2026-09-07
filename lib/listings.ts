@@ -23,9 +23,10 @@ export type ListingWithSaveCount = Prisma.ListingGetPayload<{
   };
 }>;
 
-export function getListings() {
+export function getListings(limit?: number) {
   return prisma.listing.findMany({
     where: { status: "ACTIVE" },
+    ...(limit === undefined ? {} : { take: limit }),
     include: { photos: true, seller: { select: PUBLIC_USER_SELECT } },
     orderBy: { createdAt: "desc" },
   });

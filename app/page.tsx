@@ -9,39 +9,35 @@ import { ListingCard } from "@/components/ListingCard";
 import { getListings } from "@/lib/listings";
 
 export default async function Home() {
-  const listings = await getListings();
+  const listings = await getListings(6);
 
   return (
-    <main>
+    <>
       <Navbar />
-      <Hero />
-      <CategoryStrip />
-
-      <section id="listings" className="max-w-7xl mx-auto px-6 pt-10 pb-16">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber mb-2">
-              Just tested
-            </p>
-            <h2 className="font-display font-semibold text-2xl">
-              Recently published listings
-            </h2>
+      <main id="main-content" className="home-page">
+        <Hero />
+        <section id="listings" className="market-container home-listings" aria-labelledby="listings-heading">
+          <CategoryStrip />
+          <div className="section-heading">
+            <h2 id="listings-heading">Latest listings</h2>
+            <Link href="/browse" className="market-text-link">View all listings <span aria-hidden>↗</span></Link>
           </div>
-          <Link href="/browse" className="text-[13px] text-ink-dim hover:text-ink">
-            View all →
-          </Link>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {listings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
-        </div>
-      </section>
-
-      <TrustBar />
-      <SellCta />
+          {listings.length > 0 ? (
+            <div className="home-listing-grid">
+              {listings.map((listing) => <ListingCard key={listing.id} listing={listing} />)}
+            </div>
+          ) : (
+            <div className="listings-empty">
+              <h3>Room for something good.</h3>
+              <p>There are no active listings yet. Give your hardware a new beginning.</p>
+              <Link href="/sell" className="market-button market-button-primary">List your hardware <span aria-hidden>↗</span></Link>
+            </div>
+          )}
+        </section>
+        <TrustBar />
+        <SellCta />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }

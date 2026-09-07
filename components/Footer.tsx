@@ -1,48 +1,34 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
-    <footer className="px-6 py-14">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10 mb-12">
-        <div>
-          <span className="font-display font-semibold text-lg">
-            re<span className="text-amber">new</span>
-          </span>
-          <p className="text-ink-dim text-[13px] mt-3 max-w-55 leading-relaxed">
-            Used PC hardware, sold with proof it works.
-          </p>
+    <footer className="market-footer">
+      <div className="market-container">
+        <div className="footer-main">
+          <div className="footer-brand">
+            <Link href="/" className="market-wordmark" aria-label="Renew home">re<span>new</span><span className="wordmark-dot" aria-hidden="true">.</span></Link>
+            <p>Good hardware deserves another chapter.</p>
+          </div>
+          <nav aria-label="Footer marketplace">
+            <h2>Marketplace</h2>
+            <Link href="/browse?category=GPU">Graphics cards</Link>
+            <Link href="/browse?category=CPU">Processors</Link>
+            <Link href="/browse">All hardware</Link>
+          </nav>
+          <nav aria-label="Footer help">
+            <h2>Helpful to know</h2>
+            <Link href="/faq#how-grading-works">Condition & grading</Link>
+            <Link href="/faq#buyer-protection">Buying on Renew</Link>
+            <Link href="/faq#return-policy">Returns</Link>
+          </nav>
+          <nav aria-label="Footer company">
+            <h2>Renew</h2>
+            <Link href="/about#about">About us</Link>
+            <Link href="/about#contact">Get in touch</Link>
+            <Link href="/sell">Sell your hardware</Link>
+          </nav>
         </div>
-        <div>
-          <h4 className="text-[11px] uppercase tracking-widest text-ink-dim mb-4">
-            Marketplace
-          </h4>
-          <ul className="space-y-2 text-[13px] text-ink-dim">
-            <li><a href="#" className="hover:text-ink">Browse GPUs</a></li>
-            <li><a href="#" className="hover:text-ink">Browse CPUs</a></li>
-            <li><a href="#" className="hover:text-ink">Full builds</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="text-[11px] uppercase tracking-widest text-ink-dim mb-4">
-            Trust
-          </h4>
-          <ul className="space-y-2 text-[13px] text-ink-dim">
-            <li><a href="/faq#how-grading-works" className="hover:text-ink">How grading works</a></li>
-            <li><a href="/faq#buyer-protection" className="hover:text-ink">Buyer protection</a></li>
-            <li><a href="/faq#return-policy" className="hover:text-ink">Return policy</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="text-[11px] uppercase tracking-widest text-ink-dim mb-4">
-            Company
-          </h4>
-          <ul className="space-y-2 text-[13px] text-ink-dim">
-            <li><a href="/about#about" className="hover:text-ink">About</a></li>
-            <li><a href="/about#contact" className="hover:text-ink">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto border-t border-line pt-6 text-[12px] text-ink-dim flex justify-between">
-        <span>© 2026 Renew</span>
-        <span>Built with Next.js · Supabase · Prisma</span>
+        <div className="footer-bottom"><span>© {new Date().getFullYear()} Renew</span><span>Built for the next build.</span></div>
       </div>
     </footer>
   );
