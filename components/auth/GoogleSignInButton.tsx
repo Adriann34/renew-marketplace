@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/Button";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -18,10 +19,10 @@ export function GoogleSignInButton() {
   }
 
   return (
-    <button
+    <Button variant="secondary"
       type="button"
       onClick={handleClick}
-      className="w-full flex items-center justify-center gap-2.5 border border-line bg-bg-inset text-ink text-[14px] font-medium h-10 rounded-(--radius-tag) hover:bg-bg-elevated transition-colors"
+      className="w-full"
     >
       <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
         <path
@@ -42,6 +43,6 @@ export function GoogleSignInButton() {
         />
       </svg>
       Continue with Google
-    </button>
+    </Button>
   );
 }

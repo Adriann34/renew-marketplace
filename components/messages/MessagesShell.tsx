@@ -22,7 +22,7 @@ export function MessagesShell({
   const hasActive = !!activeId;
 
   return (
-    <div className="flex-1 flex border border-line rounded-(--radius-tag) bg-bg-elevated overflow-hidden min-h-0">
+    <div className="messages-shell">
       <aside
         className={`w-full lg:w-75 shrink-0 lg:border-r border-line flex-col min-h-0 ${
           hasActive ? "hidden lg:flex" : "flex"

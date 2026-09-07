@@ -1,7 +1,7 @@
 /**
  * Minimal theme-aware loading spinner. Inherits `currentColor`, so it takes on
  * the text color of whatever button/context it sits in (e.g. bg-inset on the
- * amber publish button). Size via the `size` prop.
+ * accent publish button). Size via the `size` prop.
  */
 export function Spinner({ size = 16, className = "" }: { size?: number; className?: string }) {
   return (

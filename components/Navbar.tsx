@@ -1,3 +1,4 @@
+import { ButtonLink } from "@/components/ui/Button";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AccountMenu } from "@/components/AccountMenu";
@@ -34,7 +35,7 @@ export async function Navbar({ overlay = false }: { overlay?: boolean }) {
             {user ? <>{messages}<AccountMenu /></> : <Link href="/signin">Sign in</Link>}
             <ThemeToggle />
           </div>
-          <Link href="/sell" className="market-button market-button-primary nav-sell">List an item <span aria-hidden="true">+</span></Link>
+          <ButtonLink href="/sell" className="nav-sell">List an item <span aria-hidden="true">+</span></ButtonLink>
           <MobileNav>
             <Link href="/browse">Browse hardware</Link>
             {user ? <>

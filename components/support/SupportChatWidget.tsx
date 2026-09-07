@@ -1,7 +1,8 @@
 "use client";
+import { Textarea } from "@/components/ui/Field";
+import { Button, ButtonLink } from "@/components/ui/Button";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { MAX_SUPPORT_MESSAGE_CHARS } from "@/lib/supportChat";
 
 /**
@@ -159,37 +160,37 @@ export function SupportChatWidget({ isAuthenticated }: { isAuthenticated: boolea
   return (
     <>
       {/* Launcher — sticky/fixed bottom-right */}
-      <button
+      <Button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close support chat" : "Open support chat"}
         aria-expanded={open}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-amber text-bg-inset shadow-lg flex items-center justify-center hover:bg-amber/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+        className="support-launcher"
       >
         {open ? <CloseIcon /> : <ChatIcon />}
-      </button>
+      </Button>
 
       {/* Chat panel */}
       {open && (
         <div
           role="dialog"
           aria-label="Renew support chat"
-          className="fixed bottom-24 right-6 z-50 flex flex-col w-[min(24rem,calc(100vw-3rem))] h-[min(34rem,calc(100vh-8rem))] bg-bg-elevated border border-line rounded-2xl shadow-2xl overflow-hidden"
+          className="support-panel"
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 border-b border-line shrink-0">
-            <div className="w-9 h-9 rounded-full bg-amber/15 text-amber flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-full bg-accent-soft text-ink flex items-center justify-center shrink-0">
               <ChatIcon small />
             </div>
             <div className="min-w-0">
               <p className="font-display font-medium text-[15px] leading-tight">Renew Support</p>
-              <p className="font-mono text-[11px] text-ink-dim leading-tight">AI assistant · replies instantly</p>
+              <p className="font-body text-[11px] text-ink-dim leading-tight">AI assistant · replies instantly</p>
             </div>
             <button
               type="button"
               onClick={closePanel}
               aria-label="Close support chat"
-              className="ml-auto text-ink-dim hover:text-ink transition-colors p-1"
+              className="ml-auto ui-button ui-button-quiet ui-button-icon"
             >
               <CloseIcon />
             </button>
@@ -205,13 +206,7 @@ export function SupportChatWidget({ isAuthenticated }: { isAuthenticated: boolea
                 }`}
               >
                 <div
-                  className={`px-3 py-2 text-[14px] leading-snug border whitespace-pre-wrap break-words ${
-                    m.role === "user" ? "bg-amber/15 border-amber/20 text-ink" : "bg-bg border-line text-ink"
-                  }`}
-                  style={{
-                    borderRadius: 12,
-                    [m.role === "user" ? "borderTopRightRadius" : "borderTopLeftRadius"]: 3,
-                  }}
+                  className={`message-bubble whitespace-pre-wrap ${m.role === "user" ? "message-bubble-mine" : ""}`}
                 >
                   {m.content || (sending ? <TypingDots /> : null)}
                 </div>
@@ -224,35 +219,34 @@ export function SupportChatWidget({ isAuthenticated }: { isAuthenticated: boolea
           {isAuthenticated ? (
             <div className="border-t border-line px-3 py-3 shrink-0">
               <div className="flex items-end gap-2">
-                <textarea
+                <Textarea
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value.slice(0, MAX_SUPPORT_MESSAGE_CHARS))}
                   onKeyDown={onKeyDown}
                   rows={1}
+                  aria-label="Ask Renew support"
                   placeholder="Ask a question…"
-                  className="flex-1 resize-none bg-bg-inset border border-line rounded-(--radius-tag) px-3 py-2 text-[14px] leading-snug max-h-28 focus:outline-none focus:border-amber/60 placeholder:text-ink-dim"
+                  className="flex-1 max-h-28"
                 />
-                <button
+                <Button size="icon"
                   type="button"
                   onClick={send}
                   disabled={!input.trim() || sending}
                   aria-label="Send message"
-                  className="w-9.5 h-9.5 shrink-0 flex items-center justify-center rounded-(--radius-tag) bg-amber text-bg-inset hover:bg-amber/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <SendIcon />
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
             <div className="border-t border-line px-4 py-4 shrink-0 text-center">
               <p className="text-[13px] text-ink-dim mb-3">Sign in to chat with our support assistant.</p>
-              <Link
+              <ButtonLink
                 href="/signin"
-                className="inline-flex items-center justify-center bg-amber text-bg-inset text-[13px] font-medium px-4 h-9 rounded-(--radius-tag) hover:bg-amber/90 transition-colors"
               >
                 Sign in
-              </Link>
+              </ButtonLink>
             </div>
           )}
         </div>

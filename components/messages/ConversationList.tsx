@@ -1,3 +1,5 @@
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ButtonLink } from "@/components/ui/Button";
 import Link from "next/link";
 import type { ConversationSummary } from "@/lib/conversations";
 import { hasUnread } from "@/lib/conversations";
@@ -27,9 +29,7 @@ export function ConversationList({
   if (conversations.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center p-8 text-center">
-        <p className="text-[13px] text-ink-dim">
-          No conversations yet. Message a seller from a listing to start one.
-        </p>
+        <EmptyState title="Start a conversation." action={<ButtonLink href="/browse" variant="secondary" size="small">Explore hardware</ButtonLink>}>Ask a seller about a part. Your conversations will appear here.</EmptyState>
       </div>
     );
   }
@@ -47,13 +47,10 @@ export function ConversationList({
           <Link
             key={conversation.id}
             href={`/messages/${conversation.id}`}
-            className={`flex gap-3 items-start px-3.5 py-3 border-b border-line border-l-2 transition-colors ${
-              isActive
-                ? "bg-amber/10 border-l-amber"
-                : "border-l-transparent hover:bg-bg-inset"
-            }`}
+            className="conversation-item"
+            aria-current={isActive ? "page" : undefined}
           >
-            <div className="w-9.5 h-9.5 shrink-0 overflow-hidden flex items-center justify-center rounded-(--radius-tag) bg-amber text-bg-inset font-mono font-semibold text-[13px]">
+            <div className="avatar w-10 h-10">
               {other.avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={other.avatarUrl} alt={label} className="w-full h-full object-cover" />
@@ -64,16 +61,16 @@ export function ConversationList({
 
             <div className="min-w-0 flex-1">
               <div className="flex justify-between gap-2 items-baseline">
-                <span className={`text-[14px] truncate ${unread ? "font-bold text-ink" : "font-semibold"}`}>
+                <span className={`text-[14px] truncate ${unread ? "font-semibold text-ink" : "font-medium"}`}>
                   {label}
                 </span>
                 {last && (
-                  <span className="font-mono text-[11px] text-ink-dim shrink-0">
+                  <span className="tabular-nums text-[11px] text-ink-dim shrink-0">
                     {formatConversationTime(new Date(last.createdAt))}
                   </span>
                 )}
               </div>
-              <div className="font-mono text-[11px] text-amber truncate my-0.5">
+              <div className="text-[12px] text-ink-dim truncate my-1">
                 {conversation.listing.title}
               </div>
               <div
@@ -85,7 +82,7 @@ export function ConversationList({
               </div>
             </div>
 
-            {unread && <span className="w-2 h-2 rounded-full bg-amber shrink-0 mt-1.5" />}
+            {unread && <span className="w-2 h-2 rounded-full bg-accent shrink-0 mt-1.5" />}
           </Link>
         );
       })}

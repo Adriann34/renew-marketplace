@@ -1,3 +1,4 @@
+import { ButtonLink } from "@/components/ui/Button";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
@@ -30,7 +31,7 @@ export default async function Home() {
             <div className="listings-empty">
               <h3>Room for something good.</h3>
               <p>There are no active listings yet. Give your hardware a new beginning.</p>
-              <Link href="/sell" className="market-button market-button-primary">List your hardware <span aria-hidden>→</span></Link>
+              <ButtonLink href="/sell" >List your hardware <span aria-hidden>→</span></ButtonLink>
             </div>
           )}
         </section>

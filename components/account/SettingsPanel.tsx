@@ -1,4 +1,6 @@
 "use client";
+import { FieldLabel, Input, Select } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
 
 import { useActionState, useState } from "react";
 import {
@@ -12,10 +14,6 @@ import {
 import { AvatarUploadForm } from "@/components/account/AvatarUploadForm";
 import { CURRENCIES } from "@/lib/currency";
 import { useCurrency } from "@/components/CurrencyProvider";
-
-const inputClass =
-  "w-full border border-line bg-bg-inset px-3 h-10 text-[14px] text-ink placeholder:text-ink-dim outline-none focus:border-amber transition-colors disabled:opacity-60";
-const labelClass = "block text-[12px] text-ink-dim mb-1.5";
 
 const profileInitial: UpdateProfileState = { error: null };
 const passwordInitial: UpdatePasswordState = { error: null };
@@ -45,9 +43,9 @@ export function SettingsPanel({
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
-    <div className="flex flex-col gap-6">
-      <section className="border border-line bg-bg-elevated p-6">
-        <h3 className="font-display font-semibold text-[16px] mb-1">Profile information</h3>
+    <div className="form-stack">
+      <section className="form-section">
+        <h3 className="mb-2">Profile information</h3>
         <p className="text-ink-dim text-[13px] mb-5">
           Shown to buyers and sellers you interact with on renew.
         </p>
@@ -56,54 +54,54 @@ export function SettingsPanel({
           <AvatarUploadForm avatarUrl={avatarUrl} initials={(name || email).slice(0, 2).toUpperCase()} />
         </div>
 
-        <form action={profileAction} className="space-y-4">
+        <form action={profileAction} className="space-y-6">
           {profileState.error && (
-            <p className="text-[13px] text-danger border border-danger/40 bg-danger/5 px-3 py-2">
+            <p role="alert" className="form-notice text-danger">
               {profileState.error}
             </p>
           )}
           {profileState.success && (
-            <p className="text-[13px] text-pass border border-pass/40 bg-pass/5 px-3 py-2">
+            <p role="status" className="form-notice text-pass">
               Saved.
             </p>
           )}
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="name" className={labelClass}>Full name</label>
-              <input id="name" name="name" type="text" defaultValue={name} className={inputClass} />
+              <FieldLabel htmlFor="name">Full name</FieldLabel>
+              <Input id="name" name="name" type="text" defaultValue={name}  />
             </div>
             <div>
-              <label htmlFor="email" className={labelClass}>Email</label>
-              <input id="email" type="email" value={email} disabled className={inputClass} />
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input id="email" type="email" value={email} disabled  />
             </div>
             <div>
-              <label htmlFor="phone" className={labelClass}>Phone</label>
-              <input id="phone" name="phone" type="text" defaultValue={phone} placeholder="+63 917 555 0142" className={inputClass} />
+              <FieldLabel htmlFor="phone">Phone</FieldLabel>
+              <Input id="phone" name="phone" type="text" defaultValue={phone} placeholder="+63 917 555 0142"  />
             </div>
             <div>
-              <label htmlFor="location" className={labelClass}>Location</label>
-              <input id="location" name="location" type="text" defaultValue={location} placeholder="Manila, Philippines" className={inputClass} />
+              <FieldLabel htmlFor="location">Location</FieldLabel>
+              <Input id="location" name="location" type="text" defaultValue={location} placeholder="Manila, Philippines"  />
             </div>
             <div>
-              <label htmlFor="preferredCurrency" className={labelClass}>Display currency</label>
+              <FieldLabel htmlFor="preferredCurrency">Display currency</FieldLabel>
               <div className="relative">
                 {/* form="__none__" points at no form, so despite living inside the
                     profile <form> this control has no form owner — it isn't submitted
                     or reset by "Save changes". It's a live preference driven entirely
                     by the CurrencyProvider (applies instantly). */}
-                <select
+                <Select
                   id="preferredCurrency"
                   form="__none__"
                   value={displayCurrency}
                   onChange={(e) => setDisplayCurrency(e.target.value)}
-                  className={`${inputClass} appearance-none pr-10 cursor-pointer`}
+                  className="appearance-none pr-10"
                 >
                   {CURRENCIES.map((c) => (
                     <option key={c.code} value={c.code}>
                       {c.code} — {c.name}
                     </option>
                   ))}
-                </select>
+                </Select>
                 <svg
                   className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none text-ink-dim"
                   viewBox="0 0 24 24"
@@ -121,26 +119,25 @@ export function SettingsPanel({
             </div>
           </div>
           <div className="flex justify-end">
-            <button
+            <Button
               type="submit"
               disabled={profilePending}
-              className="bg-amber text-bg-inset text-[13.5px] font-semibold px-5 h-10 rounded-(--radius-tag) hover:bg-amber/90 disabled:opacity-60 transition-colors"
             >
               {profilePending ? "Saving…" : "Save changes"}
-            </button>
+            </Button>
           </div>
         </form>
       </section>
 
-      <section className="border border-line bg-bg-elevated p-6">
-        <h3 className="font-display font-semibold text-[16px] mb-1">Password &amp; security</h3>
+      <section className="form-section">
+        <h3 className="mb-2">Password &amp; security</h3>
         <p className="text-ink-dim text-[13px] mb-5">
           Use a strong password you&apos;re not using anywhere else.
         </p>
 
         <form
           action={passwordAction}
-          className="space-y-4"
+          className="space-y-6"
           onSubmit={(e) => {
             const form = e.currentTarget;
             if (form.newPassword.value !== form.confirmPassword.value) {
@@ -149,85 +146,81 @@ export function SettingsPanel({
           }}
         >
           {passwordState.error && (
-            <p className="text-[13px] text-danger border border-danger/40 bg-danger/5 px-3 py-2">
+            <p role="alert" className="form-notice text-danger">
               {passwordState.error}
             </p>
           )}
           {passwordState.success && (
-            <p className="text-[13px] text-pass border border-pass/40 bg-pass/5 px-3 py-2">
+            <p role="status" className="form-notice text-pass">
               Password updated.
             </p>
           )}
           <div>
-            <label htmlFor="currentPassword" className={labelClass}>Current password</label>
-            <input id="currentPassword" name="currentPassword" type="password" required className={inputClass} />
+            <FieldLabel htmlFor="currentPassword">Current password</FieldLabel>
+            <Input id="currentPassword" name="currentPassword" type="password" required  />
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="newPassword" className={labelClass}>New password</label>
-              <input id="newPassword" name="newPassword" type="password" required minLength={8} className={inputClass} />
+              <FieldLabel htmlFor="newPassword">New password</FieldLabel>
+              <Input id="newPassword" name="newPassword" type="password" required minLength={8}  />
             </div>
             <div>
-              <label htmlFor="confirmPassword" className={labelClass}>Confirm new password</label>
-              <input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} className={inputClass} />
+              <FieldLabel htmlFor="confirmPassword">Confirm new password</FieldLabel>
+              <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8}  />
             </div>
           </div>
           <div className="flex justify-end">
-            <button
+            <Button
               type="submit"
               disabled={passwordPending}
-              className="bg-amber text-bg-inset text-[13.5px] font-semibold px-5 h-10 rounded-(--radius-tag) hover:bg-amber/90 disabled:opacity-60 transition-colors"
             >
               {passwordPending ? "Updating…" : "Update password"}
-            </button>
+            </Button>
           </div>
         </form>
       </section>
 
-      <section className="border border-danger/40 bg-bg-elevated p-6">
-        <h3 className="font-display font-semibold text-[16px] mb-1">Danger zone</h3>
+      <section className="form-section">
+        <h3 className="mb-2">Delete account</h3>
         <p className="text-ink-dim text-[13px] mb-5">
           Deleting your account removes your listings, photos, and saved items permanently. This
           can&apos;t be undone.
         </p>
 
         {!confirmingDelete ? (
-          <button
+          <Button variant="danger-outline" size="small"
             type="button"
             onClick={() => setConfirmingDelete(true)}
-            className="border border-danger text-danger text-[13.5px] font-semibold px-5 h-10 rounded-(--radius-tag) hover:bg-danger/10 transition-colors"
           >
             Delete my account
-          </button>
+          </Button>
         ) : (
           <form action={deleteActionFn} className="space-y-3 max-w-sm">
             {deleteState.error && (
-              <p className="text-[13px] text-danger border border-danger/40 bg-danger/5 px-3 py-2">
+              <p role="alert" className="form-notice text-danger">
                 {deleteState.error}
               </p>
             )}
             <div>
-              <label htmlFor="confirmEmail" className={labelClass}>
-                Type <span className="font-mono text-ink">{email}</span> to confirm
-              </label>
-              <input id="confirmEmail" name="confirmEmail" type="text" required className={inputClass} />
+              <FieldLabel htmlFor="confirmEmail">
+                Type <span className="font-body text-ink">{email}</span> to confirm
+              </FieldLabel>
+              <Input id="confirmEmail" name="confirmEmail" type="text" required  />
             </div>
             <div className="flex gap-2">
-              <button
+              <Button variant="danger"
                 type="submit"
                 disabled={deletePending}
-                className="bg-danger text-bg-inset text-[13.5px] font-semibold px-5 h-10 rounded-(--radius-tag) hover:bg-danger/90 disabled:opacity-60 transition-colors"
               >
                 {deletePending ? "Deleting…" : "Permanently delete account"}
-              </button>
-              <button
+              </Button>
+              <Button variant="secondary" size="small"
                 type="button"
                 onClick={() => setConfirmingDelete(false)}
                 disabled={deletePending}
-                className="border border-line text-[13.5px] px-5 h-10 rounded-(--radius-tag) text-ink-dim hover:text-ink disabled:opacity-50 transition-colors"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
         )}

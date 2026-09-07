@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/ui/Page";
+import { PageHeading } from "@/components/ui/PageHeading";
 import { AccountView } from "@/components/account/AccountView";
 import { getListingsBySeller } from "@/lib/listings";
 import { getSavedListings } from "@/lib/saved";
@@ -43,19 +43,12 @@ export default async function AccountPage({
   };
 
   return (
-    <main>
-      <Navbar />
+    <PageShell>
 
-      <div className="max-w-7xl mx-auto px-6 pt-10 pb-2">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber mb-2">
-          Account
-        </p>
-        <h1 className="font-display font-semibold text-2xl">My account</h1>
-      </div>
+      <PageHeading eyebrow="Account" title="My account" />
 
       <AccountView profile={profile} listings={listings} saved={saved} initialTab={initialTab} />
 
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

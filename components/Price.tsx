@@ -23,7 +23,7 @@ export function Price({
 }: {
   amount: number;
   currency: string;
-  /** Classes for the primary figure (size etc.); base font-mono text-amber is applied. */
+  /** Classes for the primary figure (size etc.); base font-body tabular-nums text-ink is applied. */
   className?: string;
   align?: "left" | "right";
   secondaryClassName?: string;
@@ -35,7 +35,7 @@ export function Price({
 
   // Same currency, or conversion unavailable → show the real price only.
   if (converted == null) {
-    return <span className={`font-mono text-amber ${className}`}>{realFormatted}</span>;
+    return <span className={`font-body tabular-nums text-ink ${className}`}>{realFormatted}</span>;
   }
 
   const tooltip = `Approximate — converted at today's exchange rate. The seller is asking ${realFormatted} (${getCurrencyMeta(currency).name}).`;
@@ -45,10 +45,10 @@ export function Price({
       className={`inline-flex flex-col ${align === "right" ? "items-end" : "items-start"}`}
       title={tooltip}
     >
-      <span className={`font-mono text-amber ${className}`}>
+      <span className={`font-body tabular-nums text-ink ${className}`}>
         {formatApprox(converted, displayCurrency)}
       </span>
-      <span className={`font-mono text-[11px] text-ink-dim leading-tight ${secondaryClassName}`}>
+      <span className={`font-body tabular-nums text-[12px] text-ink-dim leading-tight ${secondaryClassName}`}>
         {realFormatted}
       </span>
     </span>

@@ -1,9 +1,7 @@
 "use client";
+import { Input } from "@/components/ui/Field";
 
 import { useEffect, useRef, useState } from "react";
-
-const inputClass =
-  "w-full border border-line bg-bg-inset px-3 h-10 text-[14px] text-ink placeholder:text-ink-dim outline-none focus:border-amber transition-colors";
 
 export function LocationAutocomplete({
   name,
@@ -50,7 +48,7 @@ export function LocationAutocomplete({
 
   return (
     <div ref={containerRef} className="relative">
-      <input
+      <Input
         id={name}
         name={name}
         type="text"
@@ -64,10 +62,9 @@ export function LocationAutocomplete({
         }}
         onFocus={() => setOpen(true)}
         placeholder="Manila, Philippines"
-        className={inputClass}
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute z-10 top-full left-0 right-0 mt-1 border border-line bg-bg-elevated max-h-56 overflow-y-auto">
+        <ul className="absolute z-10 top-full left-0 right-0 mt-2 p-1 border border-line bg-bg-elevated rounded-xl shadow-lg max-h-56 overflow-y-auto">
           {Array.from(new Set(suggestions)).map((suggestion) => (
             <li key={suggestion}>
               <button
@@ -78,7 +75,7 @@ export function LocationAutocomplete({
                   setOpen(false);
                   onValueChange?.(suggestion);
                 }}
-                className="w-full text-left px-3 py-2 text-[14px] text-ink hover:bg-bg-inset transition-colors"
+                className="w-full text-left px-3 py-3 rounded-lg text-[14px] text-ink hover:bg-bg-inset transition-colors"
               >
                 {suggestion}
               </button>

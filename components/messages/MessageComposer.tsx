@@ -1,4 +1,6 @@
 "use client";
+import { Textarea } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
 
 import { useRef, useState } from "react";
 
@@ -74,7 +76,7 @@ export function MessageComposer({
   }
 
   return (
-    <div className="border-t border-line px-4 py-3 shrink-0">
+    <div className="border-t border-line px-5 py-4 shrink-0">
       {attachError && (
         <p className="text-[12px] text-danger mb-2 px-1">{attachError}</p>
       )}
@@ -85,7 +87,7 @@ export function MessageComposer({
           <img
             src={preview}
             alt="Attachment preview"
-            className="max-h-28 rounded-(--radius-tag) border border-line"
+            className="max-h-28 rounded-xl border border-line"
           />
           <button
             type="button"
@@ -94,7 +96,7 @@ export function MessageComposer({
               if (fileInputRef.current) fileInputRef.current.value = "";
             }}
             aria-label="Remove attachment"
-            className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center rounded-full bg-ink text-bg text-[11px]"
+            className="absolute -top-2 -right-2 w-9 h-9 flex items-center justify-center rounded-full bg-ink text-bg text-[12px]"
           >
             ✕
           </button>
@@ -113,14 +115,14 @@ export function MessageComposer({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           aria-label="Attach photo"
-          className="w-9 h-9 shrink-0 flex items-center justify-center rounded-(--radius-tag) border border-line bg-bg-inset text-ink-dim hover:text-ink hover:border-ink-dim transition-colors"
+          className="ui-button ui-button-secondary ui-button-icon"
         >
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21.44 11.05l-9.19 9.19a5 5 0 01-7.07-7.07l9.19-9.19a3.5 3.5 0 015 5l-9.2 9.19a1.5 1.5 0 01-2.12-2.12l8.49-8.48" />
           </svg>
         </button>
 
-        <textarea
+        <Textarea
           ref={textareaRef}
           value={text}
           onChange={(e) => {
@@ -129,22 +131,22 @@ export function MessageComposer({
           }}
           onKeyDown={handleKeyDown}
           rows={1}
-          placeholder="Write a message..."
-          className="flex-1 resize-none border border-line bg-bg-inset rounded-(--radius-tag) px-3 py-2 text-[14px] text-ink placeholder:text-ink-dim outline-none focus:border-amber focus:bg-bg-elevated min-h-9.5 max-h-30"
+          aria-label="Message"
+          placeholder="Write a message…"
+          className="flex-1 min-h-12 max-h-30"
         />
 
-        <button
+        <Button size="icon"
           type="button"
           onClick={submit}
           disabled={sending || (!text.trim() && !file)}
           aria-label="Send message"
-          className="w-9.5 h-9.5 shrink-0 flex items-center justify-center rounded-(--radius-tag) bg-amber text-bg-inset hover:bg-amber/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="22" y1="2" x2="11" y2="13" />
             <polygon points="22 2 15 22 11 13 2 9 22 2" />
           </svg>
-        </button>
+        </Button>
       </div>
     </div>
   );

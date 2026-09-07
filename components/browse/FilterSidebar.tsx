@@ -1,4 +1,5 @@
 "use client";
+import { Input } from "@/components/ui/Field";
 
 import type { Grade } from "@prisma/client";
 import { gradeLabel, gradeDot } from "@/lib/grade";
@@ -81,13 +82,13 @@ export function FilterSidebar({
   });
 
   return (
-    <div className="border border-line bg-bg-elevated">
-      <div className="flex items-center justify-between px-4 h-11 border-b border-line">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber">Filters</p>
+    <div className="filter-sidebar">
+      <div className="filter-sidebar-head">
+        <p className="text-[16px] font-medium">Filters</p>
         <button
           type="button"
           onClick={onClearAll}
-          className="font-mono text-[11.5px] text-ink-dim underline underline-offset-2 hover:text-amber transition-colors"
+          className="font-body text-[11.5px] text-ink-dim underline underline-offset-2 hover:text-accent transition-colors"
         >
           Clear all
         </button>
@@ -102,11 +103,11 @@ export function FilterSidebar({
           {GRADES.map((g) => (
             <label
               key={g}
-              className="flex items-center gap-2.5 text-[13.5px] cursor-pointer hover:text-amber transition-colors"
+              className="flex items-center gap-2.5 text-[13.5px] cursor-pointer hover:text-accent transition-colors"
             >
               <input
                 type="checkbox"
-                className="w-3.5 h-3.5 accent-amber"
+                className="w-4 h-4 accent-accent"
                 checked={grades.includes(g)}
                 onChange={() => onToggleGrade(g)}
               />
@@ -114,7 +115,7 @@ export function FilterSidebar({
               <span>
                 {g} - {gradeLabel[g]}
               </span>
-              <span className="ml-auto font-mono text-[11.5px] text-ink-dim">
+              <span className="ml-auto font-body text-[11.5px] text-ink-dim">
                 {gradeCounts[g] ?? 0}
               </span>
             </label>
@@ -125,29 +126,29 @@ export function FilterSidebar({
       <details className="border-b border-line group" open>
         <summary className="list-none flex items-center justify-between px-4 py-3 text-[13.5px] font-semibold cursor-pointer">
           Price
-          <span className="ml-auto mr-2 font-mono text-[11px] font-normal text-ink-dim">
+          <span className="ml-auto mr-2 font-body text-[11px] font-normal text-ink-dim">
             {displayCurrency}
           </span>
           <Chevron />
         </summary>
         <div className="px-4 pb-4 flex flex-col gap-2.5">
           <div className="flex items-center gap-2">
-            <input
+            <Input
               type="number"
               min={0}
+              aria-label="Minimum price"
               placeholder="Min"
               value={priceMin ?? ""}
               onChange={(e) => onPriceMinChange(e.target.value === "" ? null : Number(e.target.value))}
-              className="w-full border border-line bg-bg px-2.5 py-1.5 text-[13px] rounded-(--radius-tag)"
             />
             <span className="text-ink-dim text-xs">—</span>
-            <input
+            <Input
               type="number"
               min={0}
+              aria-label="Maximum price"
               placeholder="Max"
               value={priceMax ?? ""}
               onChange={(e) => onPriceMaxChange(e.target.value === "" ? null : Number(e.target.value))}
-              className="w-full border border-line bg-bg px-2.5 py-1.5 text-[13px] rounded-(--radius-tag)"
             />
           </div>
           <div className="flex flex-wrap gap-1.5 mt-0.5">
@@ -166,10 +167,11 @@ export function FilterSidebar({
                       onPriceMaxChange(chip.max === Infinity ? null : chip.max);
                     }
                   }}
-                  className={`font-mono text-[11.5px] px-2.5 py-1 rounded-full border transition-colors ${
+                  aria-pressed={active}
+                  className={`text-[12px] px-3 py-2 rounded-full border transition-colors ${
                     active
-                      ? "border-amber text-amber"
-                      : "border-line text-ink-dim hover:border-amber hover:text-amber"
+                      ? "border-accent text-accent"
+                      : "border-line text-ink-dim hover:border-accent hover:text-accent"
                   }`}
                 >
                   {chip.label}
@@ -188,14 +190,15 @@ export function FilterSidebar({
         <div className="px-4 pb-4">
           <input
             type="range"
+            aria-label="Maximum draw under load"
             min={MIN_WATT}
             max={MAX_WATT}
             step={10}
             value={maxWatt}
             onChange={(e) => onMaxWattChange(Number(e.target.value))}
-            className="w-full accent-amber"
+            className="w-full accent-accent"
           />
-          <div className="flex justify-between font-mono text-[11.5px] text-ink-dim mt-1">
+          <div className="flex justify-between font-body text-[11.5px] text-ink-dim mt-1">
             <span>{MIN_WATT}W</span>
             <span>{maxWatt >= MAX_WATT ? `≤ ${MAX_WATT}W` : `≤ ${maxWatt}W`}</span>
           </div>
@@ -244,16 +247,16 @@ export function FilterSidebar({
             {countryCounts.map(({ country, count }) => (
               <label
                 key={country}
-                className="flex items-center gap-2.5 text-[13.5px] cursor-pointer hover:text-amber transition-colors"
+                className="flex items-center gap-2.5 text-[13.5px] cursor-pointer hover:text-accent transition-colors"
               >
                 <input
                   type="checkbox"
-                  className="w-3.5 h-3.5 accent-amber"
+                  className="w-4 h-4 accent-accent"
                   checked={countries.includes(country)}
                   onChange={() => onToggleCountry(country)}
                 />
                 <span>{country}</span>
-                <span className="ml-auto font-mono text-[11.5px] text-ink-dim">{count}</span>
+                <span className="ml-auto font-body text-[11.5px] text-ink-dim">{count}</span>
               </label>
             ))}
           </div>

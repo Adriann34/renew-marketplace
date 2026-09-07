@@ -1,5 +1,4 @@
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/ui/Page";
 import { BrowseView } from "@/components/browse/BrowseView";
 import { getListings } from "@/lib/listings";
 import { categoryOrder } from "@/lib/category";
@@ -31,8 +30,7 @@ export default async function BrowsePage({
       : "all";
 
   return (
-    <main>
-      <Navbar />
+    <PageShell className="browse-page">
       <BrowseView
         listings={listings}
         categoryOrder={categoryOrder}
@@ -41,7 +39,6 @@ export default async function BrowsePage({
         initialCategory={initialCategory}
         initialSearch={q ?? ""}
       />
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

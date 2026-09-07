@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/ui/Page";
+import { PageHeading } from "@/components/ui/PageHeading";
 import { CreateListingForm } from "@/components/listing/CreateListingForm";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
@@ -25,32 +25,18 @@ export default async function SellCategoryPage({
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
 
   return (
-    <main>
-      <Navbar />
+    <PageShell>
 
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <Link href="/sell" className="text-[13px] text-ink-dim hover:text-ink transition-colors">
+        <Link href="/sell" className="market-text-link mb-6">
           ← Change category
         </Link>
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-teal mb-3 mt-4">
-          For sellers
-        </p>
-        <h1 className="font-display font-semibold text-2xl mb-2">
-          List your {categoryLabels[category]}
-        </h1>
-        <p className="text-ink-dim text-[14px] mb-10 max-w-xl">
-          Fill in your diagnostic report and back it up with photos. Verified listings sell
-          faster and for better prices.
-        </p>
+      <PageHeading eyebrow="For sellers" title={`List your ${categoryLabels[category]}`} description="Share the details, add your photos, and help your hardware find its next home." />
 
         <CreateListingForm
           category={category}
           initialLocation={dbUser?.location ?? ""}
           initialCurrency={dbUser?.preferredCurrency ?? "USD"}
         />
-      </div>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

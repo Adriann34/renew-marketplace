@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
@@ -12,12 +12,6 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: ["400", "500", "600"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -82,7 +76,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${inter.variable} antialiased`}
       >
         <CurrencyProvider
           initialDisplayCurrency={displayCurrency}

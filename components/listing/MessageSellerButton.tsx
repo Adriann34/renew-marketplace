@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/Button";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -27,14 +28,13 @@ export function MessageSellerButton({ listingId }: { listingId: string }) {
 
   return (
     <div className="shrink-0 flex flex-col items-end gap-1">
-      <button
+      <Button variant="secondary" size="small"
         type="button"
         onClick={onClick}
         disabled={pending}
-        className="border border-line text-[13px] font-medium px-4 h-9 flex items-center rounded-(--radius-tag) hover:border-ink-dim transition-colors disabled:opacity-60"
       >
         {pending ? "Opening…" : "Message seller"}
-      </button>
+      </Button>
       {error && <span className="text-[11px] text-danger">{error}</span>}
     </div>
   );

@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/ui/PageHeading";
 import { notFound, redirect } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { MessagesShell } from "@/components/messages/MessagesShell";
@@ -43,19 +44,14 @@ export default async function ConversationPage({
   }));
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="messages-page">
       <Navbar />
 
-      <div className="shrink-0 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 pb-3">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber mb-1">
-          Messages
-        </p>
-        <h1 className="font-display font-semibold text-2xl">Messages</h1>
-      </div>
+      <div className="market-container messages-heading"><PageHeading title="Messages" /></div>
 
-      <div className="flex-1 min-h-0 max-w-7xl w-full mx-auto px-4 sm:px-6 pb-4 flex">
+      <main id="main-content" className="market-container messages-content">
         <MessagesShell conversations={conversations} currentUserId={user.id} activeId={id}>
-          <div className="flex-1 flex min-w-0">
+          <div className="flex-1 flex min-w-0 min-h-0">
             <ChatThread
               conversationId={active.id}
               currentUserId={user.id}
@@ -81,7 +77,7 @@ export default async function ConversationPage({
             />
           </div>
         </MessagesShell>
-      </div>
+      </main>
     </div>
   );
 }

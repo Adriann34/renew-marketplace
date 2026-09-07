@@ -235,8 +235,8 @@ export function PhotoWorkspace({
   }
 
   return (
-    <div className="border border-line bg-bg-elevated p-5">
-      <div className="flex flex-wrap gap-2 mb-4">
+    <div className="photo-workspace">
+      <div className="photo-tabs">
         {categories.map((c) => {
           const count = photos[c.key].length;
           const active = c.key === activeTab;
@@ -248,14 +248,11 @@ export function PhotoWorkspace({
                 setActiveTab(c.key);
                 setError(null);
               }}
-              className={`flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wide px-3 py-1.5 border transition-colors ${
-                active
-                  ? "bg-amber text-bg-inset border-amber"
-                  : "bg-bg-inset text-ink-dim border-line hover:text-ink"
-              }`}
+              className="photo-tab"
+              aria-pressed={active}
             >
               {c.label}
-              {c.required && <span className="text-danger">*</span>}
+              {c.required && <span className="opacity-70">*</span>}
               {count > 0 && (
                 <span
                   className={`text-[10px] px-1.5 ${active ? "bg-bg-inset/30" : "bg-line/60"}`}
@@ -286,9 +283,7 @@ export function PhotoWorkspace({
           setDragging(false);
           addFiles(e.dataTransfer.files);
         }}
-        className={`relative aspect-4/3 border overflow-hidden ${
-          dragging ? "border-amber bg-amber/5" : "border-line bg-bg-inset"
-        }`}
+        className={`photo-dropzone ${dragging ? "photo-dropzone-dragging" : ""}`}
       >
         {activePhotos.length === 0 ? (
           <button
@@ -311,7 +306,7 @@ export function PhotoWorkspace({
               type="button"
               onClick={() => removeAt(idx)}
               aria-label="Remove photo"
-              className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center bg-ink/60 text-bg hover:bg-danger transition-colors"
+              className="absolute top-2 right-2 w-10 h-10 flex items-center justify-center bg-black/60 text-white hover:bg-danger transition-colors"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -324,7 +319,7 @@ export function PhotoWorkspace({
                   type="button"
                   onClick={() => goTo((idx - 1 + activePhotos.length) % activePhotos.length)}
                   aria-label="Previous photo"
-                  className="absolute top-1/2 -translate-y-1/2 left-2 w-7 h-7 flex items-center justify-center bg-ink/50 text-bg hover:bg-ink/80 transition-colors"
+                  className="absolute top-1/2 -translate-y-1/2 left-2 w-10 h-10 flex items-center justify-center bg-black/50 text-white hover:bg-black/80 transition-colors"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <polyline points="15 18 9 12 15 6" />
@@ -334,7 +329,7 @@ export function PhotoWorkspace({
                   type="button"
                   onClick={() => goTo((idx + 1) % activePhotos.length)}
                   aria-label="Next photo"
-                  className="absolute top-1/2 -translate-y-1/2 right-2 w-7 h-7 flex items-center justify-center bg-ink/50 text-bg hover:bg-ink/80 transition-colors"
+                  className="absolute top-1/2 -translate-y-1/2 right-2 w-10 h-10 flex items-center justify-center bg-black/50 text-white hover:bg-black/80 transition-colors"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <polyline points="9 18 15 12 9 6" />
@@ -347,7 +342,7 @@ export function PhotoWorkspace({
                       type="button"
                       onClick={() => goTo(i)}
                       aria-label={`Go to photo ${i + 1}`}
-                      className={`h-1 transition-all ${i === idx ? "w-4 bg-bg" : "w-1.5 bg-bg/50"}`}
+                      className={`h-1 transition-all ${i === idx ? "w-4 bg-white" : "w-1.5 bg-white/50"}`}
                     />
                   ))}
                 </div>
@@ -364,8 +359,10 @@ export function PhotoWorkspace({
               key={i}
               type="button"
               onClick={() => goTo(i)}
-              className={`relative w-12 h-12 shrink-0 border overflow-hidden ${
-                i === idx ? "border-amber" : "border-line"
+              aria-label={`View ${meta.label} photo ${i + 1}`}
+              aria-pressed={i === idx}
+              className={`relative w-14 h-14 rounded-xl shrink-0 border overflow-hidden ${
+                i === idx ? "border-accent" : "border-line"
               }`}
             >
               <img src={url} alt="" className="w-full h-full object-cover" />
@@ -375,7 +372,7 @@ export function PhotoWorkspace({
             type="button"
             onClick={() => pickerRef.current?.click()}
             aria-label="Add more photos"
-            className="w-12 h-12 shrink-0 border border-dashed border-line flex items-center justify-center text-ink-dim hover:border-amber hover:text-amber transition-colors"
+            className="w-14 h-14 rounded-xl shrink-0 border border-dashed border-line flex items-center justify-center text-ink-dim hover:border-accent hover:text-accent transition-colors"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="12" y1="5" x2="12" y2="19" />

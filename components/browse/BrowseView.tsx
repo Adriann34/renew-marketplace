@@ -1,4 +1,9 @@
 "use client";
+import { PageHeading } from "@/components/ui/PageHeading";
+import { Dialog } from "@/components/ui/Dialog";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/Field";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Category, Grade } from "@prisma/client";
@@ -188,12 +193,10 @@ export function BrowseView({
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-6 pt-10">
-        <h1 className="font-display font-semibold text-3xl md:text-4xl mb-2">Browse listings</h1>
-        <p className="text-ink-dim text-[15px] max-w-xl mb-6">
-        </p>
-        <div className="flex items-center border border-line bg-bg-inset px-3 h-11 max-w-md mb-8 focus-within:border-ink-dim transition-colors">
-          <span className="text-ink-dim text-sm font-mono">⌕</span>
+      <div className="browse-heading">
+        <PageHeading eyebrow="The marketplace" title="Find your next build." description="Good hardware, ready for another chapter." />
+        <div className="browse-search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-ink-dim shrink-0" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></svg>
           <input
             type="search"
             value={search}
@@ -215,8 +218,8 @@ export function BrowseView({
         </div>
       </div>
 
-      <div className="border-b border-line overflow-x-auto overflow-y-hidden overscroll-x-contain">
-        <div className="flex max-w-7xl mx-auto px-6">
+      <div className="min-w-0">
+        <div className="browse-categories">
           <CategoryTabButton
             active={category === "all"}
             label="All listings"
@@ -235,11 +238,10 @@ export function BrowseView({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-7 flex flex-col lg:flex-row lg:items-start gap-8">
-        <button
-          type="button"
+      <div className="browse-layout">
+        <Button variant="secondary" size="small"
           onClick={() => setFilterOpen(true)}
-          className="lg:hidden self-start flex items-center gap-2 border border-line bg-bg-elevated px-4 h-10 text-[13.5px] font-medium"
+          className="browse-filter-trigger"
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="4" y1="6" x2="20" y2="6" />
@@ -247,45 +249,45 @@ export function BrowseView({
             <line x1="10" y1="18" x2="14" y2="18" />
           </svg>
           Filters
-        </button>
+        </Button>
 
-        <aside className="hidden lg:block lg:w-65 lg:shrink-0">
+        <aside className="hidden lg:block lg:w-56 lg:shrink-0 lg:sticky lg:top-28">
           <FilterSidebar {...sidebarProps} />
         </aside>
 
         {filterOpen && (
-          <div className="lg:hidden fixed inset-0 z-50 flex justify-end">
-            <div className="absolute inset-0 bg-ink/30" onClick={() => setFilterOpen(false)} />
-            <div className="relative w-[86%] max-w-sm h-full overflow-y-auto bg-bg">
-              <div className="flex items-center justify-between px-4 h-12 border-b border-line bg-bg-elevated">
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber">Filters</p>
-                <button type="button" onClick={() => setFilterOpen(false)} className="text-ink-dim text-xl leading-none px-1">
+          <Dialog className="filter-dialog" label="Filter listings" onClose={() => setFilterOpen(false)}>
+            <div className="relative w-[86%] max-w-sm h-full overflow-y-auto bg-bg p-6 rounded-l-3xl">
+              <div className="flex items-center justify-between pb-4 border-b border-line mb-4">
+                <p className="font-body text-[11px] text-accent">Filters</p>
+                <Button variant="quiet" size="icon" onClick={() => setFilterOpen(false)} aria-label="Close filters">
                   ×
-                </button>
+                </Button>
               </div>
               <FilterSidebar {...sidebarProps} />
             </div>
-          </div>
+          </Dialog>
         )}
 
-        <main className="min-w-0 lg:flex-1">
+        <div className="min-w-0 w-full lg:flex-1">
           <div className="flex items-center justify-between gap-3 flex-wrap mb-4">
             <p className="text-[14px] text-ink-dim">
               <b className="text-ink">{sorted.length}</b> of {categoryTotal} results
             </p>
             <div className="flex items-center gap-2.5">
               <div className="relative">
-                <select
+                <Select
+                  aria-label="Sort listings"
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortKey)}
-                  className="appearance-none border border-line bg-bg-elevated pl-3 pr-8 h-9 text-[13.5px] rounded-(--radius-tag)"
+                  className="ui-input-sort"
                 >
                   {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
                     <option key={key} value={key}>
                       {SORT_LABELS[key]}
                     </option>
                   ))}
-                </select>
+                </Select>
                 <svg
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 w-2.5 h-2.5 pointer-events-none text-ink-dim"
                   viewBox="0 0 24 24"
@@ -296,14 +298,14 @@ export function BrowseView({
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </div>
-              <div className="flex border border-line rounded-(--radius-tag) overflow-hidden">
+              <div className="segmented-control">
                 <button
                   type="button"
                   title="Grid view"
+                  aria-label="Grid view"
+                  aria-pressed={view === "grid"}
                   onClick={() => setView("grid")}
-                  className={`w-9 h-9 flex items-center justify-center ${
-                    view === "grid" ? "bg-bg-inset text-ink" : "bg-bg-elevated text-ink-dim"
-                  }`}
+                  className="segment flex items-center justify-center"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="3" width="7" height="7" />
@@ -315,10 +317,10 @@ export function BrowseView({
                 <button
                   type="button"
                   title="List view"
+                  aria-label="List view"
+                  aria-pressed={view === "list"}
                   onClick={() => setView("list")}
-                  className={`w-9 h-9 flex items-center justify-center border-l border-line ${
-                    view === "list" ? "bg-bg-inset text-ink" : "bg-bg-elevated text-ink-dim"
-                  }`}
+                  className="segment flex items-center justify-center"
                 >
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="4" y1="6" x2="20" y2="6" />
@@ -332,26 +334,23 @@ export function BrowseView({
 
           {pageItems.length > 0 ? (
             <div
-              className={view === "grid" ? "grid sm:grid-cols-2 lg:grid-cols-3 gap-5" : "flex flex-col gap-4"}
+              className={view === "grid" ? "grid sm:grid-cols-2 xl:grid-cols-3 gap-6" : "flex flex-col gap-4"}
             >
               {pageItems.map((listing) => (
                 <ListingCard key={listing.id} listing={listing} view={view} />
               ))}
             </div>
           ) : (
-            <div className="border border-dashed border-line px-6 py-16 text-center text-ink-dim text-[14px]">
-              <b className="block text-ink text-base font-semibold mb-1.5">
-                No listings match those filters.
-              </b>
+            <EmptyState title="No listings match those filters." action={<Button variant="secondary" onClick={clearFilters}>Clear filters</Button>}>
               Try widening the price range or clearing a filter — {categoryTotal}{" "}
               {categoryLabel.toLowerCase()} {isSingular ? "is" : "are"} waiting.
-            </div>
+            </EmptyState>
           )}
 
           {totalPages > 1 && (
             <Pagination currentPage={currentPage} totalPages={totalPages} onChange={setPage} />
           )}
-        </main>
+        </div>
       </div>
     </>
   );
@@ -372,12 +371,11 @@ function CategoryTabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`whitespace-nowrap px-4 h-11 flex items-center gap-2 text-[13.5px] border-b-2 -mb-px transition-colors ${
-        active ? "border-amber text-ink font-semibold" : "border-transparent text-ink-dim hover:text-ink"
-      }`}
+      aria-pressed={active}
+      className={`category-link shrink-0 ${active ? "category-link-all" : ""}`}
     >
       {label}
-      <span className={`font-mono text-[11px] ${active ? "text-amber" : "text-ink-dim"}`}>{count}</span>
+      <span className="tabular-nums text-[12px] text-ink-dim">{count}</span>
     </button>
   );
 }
@@ -394,12 +392,13 @@ function Pagination({
   const pages = paginationRange(currentPage, totalPages);
 
   return (
-    <div className="flex items-center justify-center gap-1.5 mt-10 font-mono text-[13px]">
+    <div className="browse-pagination">
       <button
         type="button"
+        aria-label="Previous page"
         disabled={currentPage === 1}
         onClick={() => onChange(currentPage - 1)}
-        className="min-w-9 h-9 border border-line text-ink-dim disabled:opacity-40 disabled:pointer-events-none hover:border-amber hover:text-amber"
+        className="pagination-button"
       >
         ‹
       </button>
@@ -413,11 +412,9 @@ function Pagination({
             key={p}
             type="button"
             onClick={() => onChange(p)}
-            className={`min-w-9 h-9 border ${
-              p === currentPage
-                ? "bg-amber text-bg-inset border-amber"
-                : "border-line text-ink-dim hover:border-amber hover:text-amber"
-            }`}
+            className="pagination-button"
+            aria-label={`Page ${p}`}
+            aria-current={p === currentPage ? "page" : undefined}
           >
             {p}
           </button>
@@ -425,9 +422,10 @@ function Pagination({
       )}
       <button
         type="button"
+        aria-label="Next page"
         disabled={currentPage === totalPages}
         onClick={() => onChange(currentPage + 1)}
-        className="min-w-9 h-9 border border-line text-ink-dim disabled:opacity-40 disabled:pointer-events-none hover:border-amber hover:text-amber"
+        className="pagination-button"
       >
         ›
       </button>

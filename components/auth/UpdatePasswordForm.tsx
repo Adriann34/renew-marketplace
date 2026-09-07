@@ -1,4 +1,6 @@
 "use client";
+import { FieldLabel, Input } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -46,8 +48,8 @@ export function UpdatePasswordForm() {
 
   if (done) {
     return (
-      <div className="border border-line bg-bg-elevated p-6">
-        <p className="text-[13px] text-pass border border-pass/40 bg-pass/5 px-3 py-2">
+      <div className="form-stack">
+        <p role="status" className="form-notice text-pass">
           Password updated. Taking you to your account…
         </p>
       </div>
@@ -55,14 +57,14 @@ export function UpdatePasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border border-line bg-bg-elevated p-6 space-y-5">
-      {error && <p className="text-[13px] text-danger">{error}</p>}
+    <form onSubmit={handleSubmit} className="form-stack">
+      {error && <p role="alert" className="text-[13px] text-danger">{error}</p>}
 
       <div>
-        <label htmlFor="password" className="block text-[12px] text-ink-dim mb-1.5">
+        <FieldLabel htmlFor="password">
           New password
-        </label>
-        <input
+        </FieldLabel>
+        <Input
           id="password"
           type="password"
           required
@@ -70,15 +72,14 @@ export function UpdatePasswordForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
-          className="w-full border border-line bg-bg-inset px-3 h-10 text-[14px] text-ink placeholder:text-ink-dim outline-none focus:border-amber transition-colors"
         />
       </div>
 
       <div>
-        <label htmlFor="confirm-password" className="block text-[12px] text-ink-dim mb-1.5">
+        <FieldLabel htmlFor="confirm-password">
           Confirm new password
-        </label>
-        <input
+        </FieldLabel>
+        <Input
           id="confirm-password"
           type="password"
           required
@@ -86,17 +87,16 @@ export function UpdatePasswordForm() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           placeholder="••••••••"
-          className="w-full border border-line bg-bg-inset px-3 h-10 text-[14px] text-ink placeholder:text-ink-dim outline-none focus:border-amber transition-colors"
         />
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-amber text-bg-inset text-[14px] font-medium h-10 rounded-(--radius-tag) hover:bg-amber/90 transition-colors disabled:opacity-60"
+        className="w-full"
       >
         {loading ? "Updating…" : "Update password"}
-      </button>
+      </Button>
     </form>
   );
 }

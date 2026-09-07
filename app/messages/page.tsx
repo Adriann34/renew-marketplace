@@ -1,3 +1,5 @@
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeading } from "@/components/ui/PageHeading";
 import { redirect } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { MessagesShell } from "@/components/messages/MessagesShell";
@@ -14,25 +16,18 @@ export default async function MessagesPage() {
   const conversations = await getConversationsForUser(user.id);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="messages-page">
       <Navbar />
 
-      <div className="shrink-0 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 pb-3">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber mb-1">
-          Messages
-        </p>
-        <h1 className="font-display font-semibold text-2xl">Messages</h1>
-      </div>
+      <div className="market-container messages-heading"><PageHeading title="Messages" /></div>
 
-      <div className="flex-1 min-h-0 max-w-7xl w-full mx-auto px-4 sm:px-6 pb-4 flex">
+      <main id="main-content" className="market-container messages-content">
         <MessagesShell conversations={conversations} currentUserId={user.id}>
           <div className="flex-1 flex items-center justify-center p-10 text-center">
-            <p className="text-[13px] text-ink-dim">
-              Select a conversation to start chatting.
-            </p>
+            <EmptyState title="A good build starts with a conversation.">Select a conversation to ask questions and work out the details.</EmptyState>
           </div>
         </MessagesShell>
-      </div>
+      </main>
     </div>
   );
 }

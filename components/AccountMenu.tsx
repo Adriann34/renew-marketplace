@@ -31,7 +31,7 @@ export function AccountMenu() {
 
       {/* pt-2 bridges the gap so moving from trigger to menu doesn't drop hover. */}
       <div className="absolute right-0 top-full pt-2 w-48 invisible translate-y-1 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 z-50">
-        <div className="border border-line bg-bg-elevated rounded-(--radius-tag) overflow-hidden py-1 shadow-[0_8px_24px_rgba(0,0,0,0.10)]">
+        <div className="border border-line bg-bg-elevated rounded-xl overflow-hidden py-1 shadow-[0_8px_24px_rgba(0,0,0,0.10)]">
           <Link href="/account" className={itemClass}>
             Your listings
           </Link>

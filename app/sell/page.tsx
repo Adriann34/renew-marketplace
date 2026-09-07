@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/ui/Page";
+import { PageHeading } from "@/components/ui/PageHeading";
 import { createClient } from "@/lib/supabase/server";
 import { categoryOrder, categoryLabels, categoryDiagnosticTier } from "@/lib/category";
 
@@ -19,40 +19,27 @@ export default async function SellPage() {
   if (!user) redirect("/signin?next=/sell");
 
   return (
-    <main>
-      <Navbar />
+    <PageShell>
 
-      <div className="max-w-4xl mx-auto px-6 py-16">
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-teal mb-3">
-          For sellers
-        </p>
-        <h1 className="font-display font-semibold text-2xl mb-2">
-          What are you selling?
-        </h1>
-        <p className="text-ink-dim text-[14px] mb-10 max-w-xl">
-          Pick a category — the diagnostic report you fill in next is tailored to it, so you&apos;re
-          never asked for numbers that don&apos;t apply to the part.
-        </p>
+      <PageHeading eyebrow="For sellers" title="What are you selling?" description="Choose your hardware category. We’ll tailor the listing details and photo requirements to your part." />
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="category-choices">
           {categoryOrder.map((category) => (
             <Link
               key={category}
               href={`/sell/${category.toLowerCase()}`}
-              className="group block border border-line bg-bg-elevated p-5 hover:border-amber/60 transition-colors"
+              className="category-choice"
             >
-              <h2 className="font-display font-medium text-[16px] mb-1.5 group-hover:text-amber transition-colors">
+              <div><h2>
                 {categoryLabels[category]}
               </h2>
-              <p className="text-ink-dim text-[13px] leading-relaxed">
+              <p className="category-choice-description">
                 {TIER_BLURB[categoryDiagnosticTier[category]]}
-              </p>
+              </p></div>
+              <span className="category-choice-arrow" aria-hidden="true">↗</span>
             </Link>
           ))}
         </div>
-      </div>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }

@@ -41,10 +41,10 @@ export function ListingActions({
         disabled={pending}
         aria-pressed={liked}
         aria-label="Save listing"
-        className={`w-9 h-9 flex items-center justify-center rounded-(--radius-tag) border transition-colors disabled:opacity-60 ${
+        className={`ui-button ui-button-icon listing-save-button ${
           liked
-            ? "border-danger text-danger bg-danger/10"
-            : "border-line text-ink-dim hover:border-ink-dim hover:text-ink"
+            ? "listing-save-button-active"
+            : "ui-button-secondary"
         }`}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
@@ -56,7 +56,7 @@ export function ListingActions({
           type="button"
           onClick={share}
           aria-label="Share listing"
-          className="w-9 h-9 flex items-center justify-center rounded-(--radius-tag) border border-line text-ink-dim hover:border-ink-dim hover:text-ink transition-colors"
+          className="ui-button ui-button-icon ui-button-secondary"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="18" cy="5" r="3" />
@@ -67,11 +67,13 @@ export function ListingActions({
           </svg>
         </button>
         <span
-          className={`absolute -top-9 right-0 whitespace-nowrap bg-ink text-bg text-[11px] font-mono px-2 py-1 rounded-(--radius-tag) transition-opacity ${
+          role="status"
+          aria-live="polite"
+          className={`absolute -top-9 right-0 whitespace-nowrap bg-ink text-bg text-[11px] font-body px-2 py-1 rounded-xl transition-opacity ${
             showToast ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
-          Link copied
+          {showToast ? "Link copied" : ""}
         </span>
       </div>
     </div>

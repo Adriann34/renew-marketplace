@@ -1,3 +1,4 @@
+import { ButtonLink } from "@/components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -11,7 +12,7 @@ export function Hero() {
             <h1 id="hero-heading">Your next build<br />starts here</h1>
             <p className="hero-description">Discover used PC hardware. Find the right parts. Make something yours.</p>
             <div className="hero-actions">
-              <Link href="/browse" className="market-button market-button-primary">Explore hardware</Link>
+              <ButtonLink href="/browse" >Explore hardware</ButtonLink>
               <Link href="/sell" className="hero-sell-link">Sell your hardware <span aria-hidden="true">→</span></Link>
             </div>
           </div>

@@ -1,4 +1,6 @@
 "use client";
+import { FieldLabel, Input } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -31,29 +33,28 @@ export function SignInForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border border-line bg-bg-elevated p-6 space-y-5">
-      {error && <p className="text-[13px] text-danger">{error}</p>}
+    <form onSubmit={handleSubmit} className="form-stack">
+      {error && <p role="alert" className="text-[13px] text-danger">{error}</p>}
 
       <div>
-        <label htmlFor="email" className="block text-[12px] text-ink-dim mb-1.5">
+        <FieldLabel htmlFor="email">
           Email
-        </label>
-        <input
+        </FieldLabel>
+        <Input
           id="email"
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="w-full border border-line bg-bg-inset px-3 h-10 text-[14px] text-ink placeholder:text-ink-dim outline-none focus:border-amber transition-colors"
         />
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <label htmlFor="password" className="block text-[12px] text-ink-dim">
+          <FieldLabel htmlFor="password">
             Password
-          </label>
+          </FieldLabel>
           <Link
             href="/forgot-password"
             className="text-[12px] text-ink-dim hover:text-ink transition-colors"
@@ -61,28 +62,27 @@ export function SignInForm() {
             Forgot password?
           </Link>
         </div>
-        <input
+        <Input
           id="password"
           type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="••••••••"
-          className="w-full border border-line bg-bg-inset px-3 h-10 text-[14px] text-ink placeholder:text-ink-dim outline-none focus:border-amber transition-colors"
         />
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-amber text-bg-inset text-[14px] font-medium h-10 rounded-(--radius-tag) hover:bg-amber/90 transition-colors disabled:opacity-60"
+        className="w-full"
       >
         {loading ? "Signing in…" : "Sign in"}
-      </button>
+      </Button>
 
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-line" />
-        <span className="text-[11px] text-ink-dim uppercase tracking-wide">or</span>
+        <span className="text-[12px] text-ink-dim">or</span>
         <div className="h-px flex-1 bg-line" />
       </div>
 

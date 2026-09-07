@@ -14,8 +14,8 @@ const OVERALL: Record<
   },
   partial: {
     label: "Partially verified",
-    cls: "border-amber text-amber bg-amber/10",
-    dot: "bg-amber",
+    cls: "border-warning/25 text-warning bg-warning/10",
+    dot: "bg-warning",
   },
   unverified: {
     label: "Not enough photo evidence",
@@ -49,18 +49,18 @@ export function AiVerdictPanel({ result }: { result: AiVerificationResult }) {
   const totalChecks = result.claims.length;
 
   return (
-    <section className="border border-line bg-bg-elevated rounded-(--radius-tag) overflow-hidden mb-6">
-      <header className="px-4 py-3 border-b border-line flex items-center justify-between gap-3">
-        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber">Photo check</span>
+    <section className="verdict-section">
+      <header className="verdict-heading">
+        <span className="text-[16px] font-medium">Photo check</span>
         <span
-          className={`inline-flex items-center gap-1.5 border text-[11px] font-medium px-2.5 py-1 rounded-(--radius-tag) shrink-0 whitespace-nowrap ${overall.cls}`}
+          className={`inline-flex items-center gap-1.5 border text-[11px] font-medium px-2.5 py-1 rounded-xl  ${overall.cls}`}
         >
           <span className={`w-1.5 h-1.5 rounded-full ${overall.dot}`} />
           {overall.label}
         </span>
       </header>
 
-      <div className="px-4 py-3">
+      <div className="py-3">
         <p className="text-[13.5px] leading-relaxed text-ink">{result.summary}</p>
         {result.status === "flagged" ? (
           <p className="mt-2 inline-flex items-center gap-1.5 text-[12px] font-medium text-danger">
@@ -68,7 +68,7 @@ export function AiVerdictPanel({ result }: { result: AiVerificationResult }) {
             Mismatch detected
           </p>
         ) : (
-          <p className="mt-1.5 font-mono text-[11px] text-ink-dim">
+          <p className="mt-1.5 font-body text-[11px] text-ink-dim">
             {result.checksConfirmed} of {totalChecks} checks confirmed from the photos
           </p>
         )}
@@ -78,11 +78,11 @@ export function AiVerdictPanel({ result }: { result: AiVerificationResult }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="w-full flex items-center justify-between gap-2 px-4 py-2.5 border-t border-line text-[12.5px] text-ink-dim hover:text-ink transition-colors"
+        className="w-full flex items-center justify-between gap-2 py-3 border-t border-line text-[12.5px] text-ink-dim hover:text-ink transition-colors"
       >
         <span>
           {open ? "Hide" : "Show"} breakdown
-          <span className="font-mono text-[11px] text-ink-dim/70"> · {result.claims.length} checks</span>
+          <span className="font-body text-[11px] text-ink-dim/70"> · {result.claims.length} checks</span>
         </span>
         <svg
           width="14"
@@ -102,20 +102,20 @@ export function AiVerdictPanel({ result }: { result: AiVerificationResult }) {
           {result.claims.map((claim, i) => {
             const c = CLAIM[claim.status];
             return (
-              <li key={i} className="px-4 py-3 flex gap-3">
-                <span className={`font-mono text-[15px] leading-5 shrink-0 ${c.cls}`} aria-hidden>
+              <li key={i} className="py-4 flex gap-3">
+                <span className={`font-body text-[15px] leading-5 shrink-0 ${c.cls}`} aria-hidden>
                   {c.mark}
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-3">
                     <p className="text-[13px] font-medium capitalize">{claim.field}</p>
-                    <span className={`text-[11px] font-mono shrink-0 ${c.cls}`}>{c.word}</span>
+                    <span className={`text-[11px] font-body shrink-0 ${c.cls}`}>{c.word}</span>
                   </div>
-                  <div className="mt-1 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-0.5 font-mono text-[11.5px] text-ink-dim">
-                    <span className="truncate">
+                  <div className="mt-1 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-0.5 font-body text-[11.5px] text-ink-dim">
+                    <span className="break-words">
                       <span className="text-ink-dim/70">claimed:</span> {claim.claimed || "—"}
                     </span>
-                    <span className="truncate">
+                    <span className="break-words">
                       <span className="text-ink-dim/70">observed:</span> {claim.observed || "—"}
                     </span>
                   </div>
@@ -127,7 +127,7 @@ export function AiVerdictPanel({ result }: { result: AiVerificationResult }) {
         </ul>
       )}
 
-      <p className="px-4 py-2.5 border-t border-line text-[11px] text-ink-dim leading-snug">
+      <p className="py-3 border-t border-line text-[11px] text-ink-dim leading-snug">
         An evidence-based aid, not a guarantee — always review the proof photos yourself.
       </p>
     </section>

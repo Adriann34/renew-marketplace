@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/Button";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -27,14 +28,14 @@ export function BuyNowButton({ listingId }: { listingId: string }) {
 
   return (
     <div>
-      <button
+      <Button
         type="button"
         onClick={onClick}
         disabled={pending}
-        className="w-full bg-amber text-bg-inset text-[14px] font-medium h-11 rounded-(--radius-tag) hover:brightness-95 transition disabled:opacity-60"
+        className="w-full"
       >
         {pending ? "Opening…" : "Buy Now"}
-      </button>
+      </Button>
       {error && (
         <p className="text-[12px] text-danger text-center mt-2.5">{error}</p>
       )}

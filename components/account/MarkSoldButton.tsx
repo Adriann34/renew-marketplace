@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/Button";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -23,14 +24,14 @@ export function MarkSoldButton({ listingId }: { listingId: string }) {
 
   return (
     <div className="flex-1 min-w-0">
-      <button
+      <Button variant="secondary" size="small"
         type="button"
         onClick={handleClick}
         disabled={pending}
-        className="w-full bg-teal text-bg-inset text-[12px] font-semibold px-3 h-8 rounded-(--radius-tag) hover:bg-teal/90 disabled:opacity-50 transition-colors whitespace-nowrap"
+        className="w-full"
       >
         {pending ? "Marking…" : "Mark sold"}
-      </button>
+      </Button>
       {error && <p className="text-[11px] text-danger mt-1">{error}</p>}
     </div>
   );

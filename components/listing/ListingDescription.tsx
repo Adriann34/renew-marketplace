@@ -20,7 +20,7 @@ export function ListingDescription({ text }: { text: string }) {
 
   return (
     <div className="mb-6">
-      <p className="text-[11px] uppercase tracking-widest text-ink-dim mb-2">Description</p>
+      <p className="text-[11px] text-ink-dim mb-2">Description</p>
       <p
         ref={ref}
         className={`text-[14px] text-ink whitespace-pre-wrap leading-relaxed ${
@@ -33,7 +33,7 @@ export function ListingDescription({ text }: { text: string }) {
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="mt-2 text-[13px] font-medium text-amber hover:underline"
+          className="mt-2 text-[13px] font-medium text-accent hover:underline"
         >
           {expanded ? "Show less" : "Show more"}
         </button>

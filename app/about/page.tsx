@@ -1,4 +1,5 @@
-import { BackButton } from "@/components/BackButton";
+import { PageShell } from "@/components/ui/Page";
+import { PageHeading } from "@/components/ui/PageHeading";
 
 const sections = [
   {
@@ -20,18 +21,12 @@ const sections = [
 
 export default function AboutPage() {
   return (
-    <div className="relative max-w-3xl mx-auto px-6 pt-14 pb-20">
-      <BackButton />
-      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-amber mb-4">
-        Company
-      </p>
-      <h1 className="font-display font-semibold text-3xl mb-12">
-        About &amp; contact
-      </h1>
-      <div className="space-y-14">
+    <PageShell width="reading">
+      <PageHeading eyebrow="Renew" title="Good hardware. Another chapter." description="A marketplace built around the details that matter." />
+      <div className="editorial-sections">
         {sections.map((section) => (
-          <section key={section.id} id={section.id} className="scroll-mt-24">
-            <h2 className="font-display font-medium text-xl mb-4">
+          <section key={section.id} id={section.id} className="editorial-section">
+            <h2 className="editorial-title">
               {section.title}
             </h2>
             <div className="space-y-4 text-ink-dim text-[15px] leading-relaxed">
@@ -42,6 +37,6 @@ export default function AboutPage() {
           </section>
         ))}
       </div>
-    </div>
+    </PageShell>
   );
 }

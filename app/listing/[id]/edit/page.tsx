@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/ui/Page";
+import { PageHeading } from "@/components/ui/PageHeading";
 import { EditListingForm } from "@/components/listing/EditListingForm";
 import { getListingById } from "@/lib/listings";
 import { createClient } from "@/lib/supabase/server";
@@ -23,28 +23,17 @@ export default async function EditListingPage({
   if (user.id !== listing.sellerId) redirect(`/listing/${id}`);
 
   return (
-    <main>
-      <Navbar />
+    <PageShell>
 
-      <div className="max-w-6xl mx-auto px-6 py-16">
         <Link
           href={`/listing/${id}`}
-          className="text-[13px] text-ink-dim hover:text-ink transition-colors"
+          className="market-text-link mb-6"
         >
           ← Back to listing
         </Link>
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-teal mb-3 mt-4">
-          For sellers
-        </p>
-        <h1 className="font-display font-semibold text-2xl mb-2">Edit listing</h1>
-        <p className="text-ink-dim text-[14px] mb-10 max-w-xl">
-          Update your diagnostic report or photos — changes go live as soon as you save.
-        </p>
+      <PageHeading eyebrow="For sellers" title="Edit listing" description="Update your diagnostic report or photos. Changes go live when you save." />
 
         <EditListingForm listing={listing} />
-      </div>
-
-      <Footer />
-    </main>
+    </PageShell>
   );
 }
