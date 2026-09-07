@@ -139,11 +139,11 @@ body {
 .hero-artwork-dark { visibility: hidden; }
 [data-theme="dark"] .hero-artwork-light { visibility: hidden; }
 [data-theme="dark"] .hero-artwork-dark { visibility: visible; }
-.hero-copy { width: 48%; min-width: 0; padding-block: 24px; }
+.hero-copy { width: 56%; min-width: 0; padding-block: 24px; }
 .section-eyebrow { font-size: 12px; line-height: 1.5; font-weight: 500; color: var(--ink-dim); margin-bottom: 24px; }
 .hero-copy .section-eyebrow { display: block; margin-bottom: 24px; color: #52635b; font-size: 10px; line-height: 1.5; }
 .hero-copy h1 { font-family: var(--font-display); font-size: clamp(44px, 4.3vw, 76px); font-weight: 500; line-height: 1.07; letter-spacing: -.055em; text-wrap: balance; }
-.hero-description { margin-top: 24px; max-width: 350px; color: var(--ink-dim); font-size: 15px; line-height: 1.8; }
+.hero-description { margin-top: 24px; max-width: 420px; color: var(--ink-dim); font-size: 15px; line-height: 1.8; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 32px; }
 .hero-actions .market-button-primary { padding-inline: 24px; }
 .hero-sell-link { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; font-size: 13px; font-weight: 500; color: var(--ink); }
