@@ -13,14 +13,14 @@ export default async function Home() {
 
   return (
     <>
-      <Navbar />
+      <Navbar overlay />
       <main id="main-content" className="home-page">
         <Hero />
         <section id="listings" className="market-container home-listings" aria-labelledby="listings-heading">
           <CategoryStrip />
           <div className="section-heading">
             <h2 id="listings-heading">Latest listings</h2>
-            <Link href="/browse" className="market-text-link">View all listings <span aria-hidden>↗</span></Link>
+            <Link href="/browse" className="market-text-link">View all listings <span aria-hidden>→</span></Link>
           </div>
           {listings.length > 0 ? (
             <div className="home-listing-grid">
@@ -30,7 +30,7 @@ export default async function Home() {
             <div className="listings-empty">
               <h3>Room for something good.</h3>
               <p>There are no active listings yet. Give your hardware a new beginning.</p>
-              <Link href="/sell" className="market-button market-button-primary">List your hardware <span aria-hidden>↗</span></Link>
+              <Link href="/sell" className="market-button market-button-primary">List your hardware <span aria-hidden>→</span></Link>
             </div>
           )}
         </section>

@@ -6,7 +6,7 @@ export function Footer() {
       <div className="market-container">
         <div className="footer-main">
           <div className="footer-brand">
-            <Link href="/" className="market-wordmark" aria-label="Renew home">re<span>new</span><span className="wordmark-dot" aria-hidden="true">.</span></Link>
+            <Link href="/" className="market-wordmark" aria-label="Renew home">renew</Link>
             <p>Good hardware deserves another chapter.</p>
           </div>
           <nav aria-label="Footer marketplace">

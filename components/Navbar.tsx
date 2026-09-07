@@ -7,7 +7,7 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { createClient } from "@/lib/supabase/server";
 import { getUnreadConversationCount } from "@/lib/conversations";
 
-export async function Navbar() {
+export async function Navbar({ overlay = false }: { overlay?: boolean }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -24,9 +24,9 @@ export async function Navbar() {
   );
 
   return (
-    <header className="market-header">
+    <header className={`market-header${overlay ? " market-header-overlay" : ""}`}>
       <div className="market-container market-nav">
-        <Link href="/" className="market-wordmark" aria-label="Renew home">re<span>new</span><span className="wordmark-dot" aria-hidden="true">.</span></Link>
+        <Link href="/" className="market-wordmark" aria-label="Renew home">renew</Link>
         <Link href="/browse" className="desktop-browse">Browse</Link>
         <SearchBar />
         <div className="nav-actions">

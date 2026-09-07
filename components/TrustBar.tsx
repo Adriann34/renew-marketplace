@@ -11,7 +11,7 @@ export function TrustBar() {
     <section className="market-container trust-section" aria-labelledby="trust-heading">
       <div className="section-heading">
         <h2 id="trust-heading">A closer look. A better decision.</h2>
-        <Link href="/faq#how-grading-works" className="market-text-link">How it works <span aria-hidden>↗</span></Link>
+        <Link href="/faq#how-grading-works" className="market-text-link">How it works <span aria-hidden>→</span></Link>
       </div>
       <div className="trust-grid">
         {items.map((item) => (

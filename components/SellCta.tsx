@@ -9,7 +9,7 @@ export function SellCta() {
           <h2 id="sell-heading">Make room for your next upgrade.</h2>
           <p>Add your specs, share your photos, and find your hardware a new home.</p>
         </div>
-        <Link href="/sell" className="market-button market-button-primary">List your hardware <span aria-hidden>↗</span></Link>
+        <Link href="/sell" className="market-button market-button-primary">List your hardware <span aria-hidden>→</span></Link>
       </div>
     </section>
   );

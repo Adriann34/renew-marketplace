@@ -3,34 +3,40 @@ import Image from "next/image";
 
 export function Hero() {
   return (
-    <section className="home-hero">
-      <div className="market-container hero-layout">
-        <div className="hero-copy">
-          <p className="section-eyebrow">The used hardware marketplace</p>
-          <h1>Good hardware.<br /><span>A new beginning.</span></h1>
-          <p className="hero-description">
-            Buy and sell used PC hardware with clear specs, condition details,
-            and seller photos.
-          </p>
-          <div className="hero-actions">
-            <Link href="/browse" className="market-button market-button-primary">Browse hardware <span aria-hidden>↗</span></Link>
-            <Link href="/sell" className="market-button market-button-secondary">Sell your hardware</Link>
+    <section className="home-hero" aria-labelledby="hero-heading">
+      <div className="hero-stage">
+        <div className="market-container hero-content">
+          <div className="hero-copy">
+            <p className="section-eyebrow">A new life for good hardware</p>
+            <h1 id="hero-heading">Your next build<br />starts here</h1>
+            <p className="hero-description">Discover used PC hardware. Find the right parts. Make something yours.</p>
+            <div className="hero-actions">
+              <Link href="/browse" className="market-button market-button-primary">Explore hardware</Link>
+              <Link href="/sell" className="hero-sell-link">Sell your hardware <span aria-hidden="true">→</span></Link>
+            </div>
           </div>
-          <p className="hero-footnote">A second life for your next upgrade.</p>
-        </div>
-        <figure className="hero-product">
-          <div className="hero-product-image">
+          <div className="hero-artwork" role="img" aria-label="Editorial illustration of a silver graphics card, processor, and memory on a studio plinth">
             <Image
-              src="/RTX_4090_home_page.png"
-              alt="NVIDIA RTX 4090 Founders Edition graphics card on a dark surface"
+              className="hero-artwork-light"
+              src="/renew-hardware-studio-light-v3.webp"
+              alt=""
               fill
-              sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1023px) 48vw, 560px"
-              className="object-cover"
+              sizes="(max-width: 1023px) 1280px, 100vw"
+              quality={100}
+              priority
+            />
+            <Image
+              className="hero-artwork-dark"
+              src="/renew-hardware-studio-dark-v3.webp"
+              alt=""
+              fill
+              sizes="(max-width: 1023px) 1280px, 100vw"
+              quality={100}
               priority
             />
           </div>
-          <figcaption><span>Built for the next build.</span><span>RTX 4090 · Founders Edition</span></figcaption>
-        </figure>
+        </div>
+        <div className="market-container hero-note"><span>Buy thoughtfully. Build beautifully.</span><span>Pre-owned. Full of possibility.</span></div>
       </div>
     </section>
   );
