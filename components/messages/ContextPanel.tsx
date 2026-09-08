@@ -9,6 +9,7 @@ export function ContextPanel({
   category,
   spec,
   thumbnailUrl,
+  returnTo,
 }: {
   listingId: string;
   title: string;
@@ -17,6 +18,7 @@ export function ContextPanel({
   category: string;
   spec: string;
   thumbnailUrl: string | null;
+  returnTo: string;
 }) {
   return (
     <aside className="hidden xl:flex w-60 shrink-0 border-l border-line p-5 flex-col gap-6 overflow-y-auto">
@@ -38,7 +40,7 @@ export function ContextPanel({
           {category} · {spec}
         </p>
         <Link
-          href={`/listing/${listingId}`}
+          href={`/listing/${listingId}?from=${encodeURIComponent(returnTo)}`}
           className="ui-button ui-button-secondary ui-button-small w-full"
         >
           View full listing

@@ -17,6 +17,10 @@ export default async function BrowsePage({
 }) {
   const { category, q } = await searchParams;
   const listings = await getListings();
+  const returnParams = new URLSearchParams();
+  if (category) returnParams.set("category", category);
+  if (q) returnParams.set("q", q);
+  const returnTo = `/browse${returnParams.size ? `?${returnParams}` : ""}`;
 
   // Category tab counts are always totals across the whole dataset — the
   // sidebar's grade/location facet counts, by contrast, are scoped to the
@@ -38,6 +42,7 @@ export default async function BrowsePage({
         totalCount={listings.length}
         initialCategory={initialCategory}
         initialSearch={q ?? ""}
+        returnTo={returnTo}
       />
     </PageShell>
   );

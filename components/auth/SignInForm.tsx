@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { GoogleSignInButton } from "./GoogleSignInButton";
 
-export function SignInForm() {
+export function SignInForm({ nextPath }: { nextPath: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +28,7 @@ export function SignInForm() {
       setError(error.message);
       return;
     }
-    router.push("/");
+    router.replace(nextPath);
     router.refresh();
   }
 
@@ -86,7 +86,7 @@ export function SignInForm() {
         <div className="h-px flex-1 bg-line" />
       </div>
 
-      <GoogleSignInButton />
+      <GoogleSignInButton nextPath={nextPath} />
     </form>
   );
 }

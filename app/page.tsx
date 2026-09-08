@@ -25,7 +25,7 @@ export default async function Home() {
           </div>
           {listings.length > 0 ? (
             <div className="home-listing-grid">
-              {listings.map((listing) => <ListingCard key={listing.id} listing={listing} />)}
+              {listings.map((listing) => <ListingCard key={listing.id} listing={listing} returnTo="/#listings" />)}
             </div>
           ) : (
             <div className="listings-empty">

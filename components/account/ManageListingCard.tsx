@@ -11,12 +11,13 @@ import type { ListingWithSaveCount } from "@/lib/listings";
 export function ManageListingCard({ listing }: { listing: ListingWithSaveCount }) {
   const conditionPhoto = listing.photos.filter((p) => p.kind === "CONDITION").sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())[0];
   const isSold = listing.status === "SOLD";
+  const listingHref = `/listing/${listing.id}?from=${encodeURIComponent("/account")}`;
 
   return <article className="manage-row">
-    <Link href={`/listing/${listing.id}`} aria-label={`View ${listing.title}`}><ListingImage src={conditionPhoto?.url} title={listing.title} /></Link>
+    <Link href={listingHref} aria-label={`View ${listing.title}`}><ListingImage src={conditionPhoto?.url} title={listing.title} /></Link>
     <div className="min-w-0">
       <p className="listing-spec">{categoryLabels[listing.category]} · {listing.spec}</p>
-      <h3><Link href={`/listing/${listing.id}`}>{listing.title}</Link></h3>
+      <h3><Link href={listingHref}>{listing.title}</Link></h3>
       <div className="manage-row-meta">
         <Price amount={listing.price} currency={listing.currency} className="text-[17px] font-medium" />
         <ConditionBadge grade={listing.grade} />
@@ -25,7 +26,7 @@ export function ManageListingCard({ listing }: { listing: ListingWithSaveCount }
       <p className="text-[12px] text-ink-dim mt-3">{listing._count.savedBy} saved · Listed {new Date(listing.createdAt).toLocaleDateString()}</p>
     </div>
     <div className="manage-row-actions">
-      <ButtonLink href={`/listing/${listing.id}/edit`} variant="secondary" size="small">Edit listing</ButtonLink>
+      <ButtonLink href={`/listing/${listing.id}/edit?from=${encodeURIComponent("/account")}`} variant="secondary" size="small">Edit listing</ButtonLink>
       {!isSold && <MarkSoldButton listingId={listing.id} />}
       <DeleteListingButton listingId={listing.id} />
     </div>

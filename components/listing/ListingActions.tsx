@@ -7,9 +7,11 @@ import { toggleSaveAction } from "@/app/listing/actions";
 export function ListingActions({
   listingId,
   initialSaved,
+  listingPath,
 }: {
   listingId: string;
   initialSaved: boolean;
+  listingPath: string;
 }) {
   const router = useRouter();
   const [liked, setLiked] = useState(initialSaved);
@@ -20,7 +22,7 @@ export function ListingActions({
     startTransition(async () => {
       const result = await toggleSaveAction(listingId);
       if ("error" in result) {
-        router.push(`/signin?next=/listing/${listingId}`);
+        router.push(`/signin?next=${encodeURIComponent(listingPath)}`);
         return;
       }
       setLiked(result.saved);

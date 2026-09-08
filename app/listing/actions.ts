@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { safeInternalPath } from "@/lib/navigation";
 import { Prisma, type PhotoKind } from "@prisma/client";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
@@ -293,7 +294,8 @@ export async function updateListingAction(
   revalidatePath("/");
   revalidatePath("/browse");
   revalidatePath("/account");
-  redirect(`/listing/${listingId}`);
+  const returnTo = safeInternalPath(String(formData.get("returnTo") ?? ""), "/browse");
+  redirect(`/listing/${listingId}?from=${encodeURIComponent(returnTo)}`);
 }
 
 export async function setListingStatusAction(

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { GoogleSignInButton } from "./GoogleSignInButton";
 
-export function SignUpForm() {
+export function SignUpForm({ nextPath }: { nextPath: string }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -31,10 +31,12 @@ export function SignUpForm() {
 
     setLoading(true);
     const supabase = createClient();
+    const callbackUrl = new URL("/auth/callback", window.location.origin);
+    callbackUrl.searchParams.set("next", nextPath);
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: { data: { name }, emailRedirectTo: callbackUrl.toString() },
     });
     setLoading(false);
 
@@ -53,7 +55,7 @@ export function SignUpForm() {
       return;
     }
 
-    router.push("/");
+    router.replace(nextPath);
     router.refresh();
   }
 
@@ -62,7 +64,7 @@ export function SignUpForm() {
       {emailTaken && (
         <p role="alert" className="text-[13px] text-danger">
           An account with this email already exists.{" "}
-          <a href="/signin" className="underline hover:text-ink transition-colors">
+          <a href={`/signin?next=${encodeURIComponent(nextPath)}`} className="underline hover:text-ink transition-colors">
             Sign in instead
           </a>
           .
@@ -141,7 +143,7 @@ export function SignUpForm() {
         <div className="h-px flex-1 bg-line" />
       </div>
 
-      <GoogleSignInButton />
+      <GoogleSignInButton nextPath={nextPath} />
     </form>
   );
 }

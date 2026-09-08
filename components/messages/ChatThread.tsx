@@ -185,7 +185,7 @@ export function ChatThread({
 
       {/* Listing context strip */}
       <Link
-        href={`/listing/${listing.id}`}
+        href={`/listing/${listing.id}?from=${encodeURIComponent(`/messages/${conversationId}`)}`}
         className="flex flex-wrap items-center gap-3 px-5 py-4 border-b border-line shrink-0 hover:bg-bg-inset transition-colors"
       >
         <div className="min-w-0 flex-1">

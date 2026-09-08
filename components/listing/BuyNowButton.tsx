@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startConversationAction } from "@/app/messages/actions";
 
-export function BuyNowButton({ listingId }: { listingId: string }) {
+export function BuyNowButton({ listingId, listingPath }: { listingId: string; listingPath: string }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export function BuyNowButton({ listingId }: { listingId: string }) {
       const result = await startConversationAction(listingId);
       if ("error" in result) {
         if (result.error === "unauthenticated") {
-          router.push(`/signin?next=/listing/${listingId}`);
+          router.push(`/signin?next=${encodeURIComponent(listingPath)}`);
         } else {
           setError(result.error);
         }

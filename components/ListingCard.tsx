@@ -5,16 +5,17 @@ import { ListingImage } from "@/components/listing/ListingImage";
 import { categoryLabels } from "@/lib/category";
 import type { ListingWithRelations } from "@/lib/listings";
 
-export function ListingCard({ listing, view = "grid" }: {
+export function ListingCard({ listing, view = "grid", returnTo }: {
   listing: ListingWithRelations;
   view?: "grid" | "list";
+  returnTo: string;
 }) {
   const conditionPhoto = listing.photos
     .filter((photo) => photo.kind === "CONDITION")
     .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())[0];
 
   return (
-    <Link href={`/listing/${listing.id}`} className={`market-listing-card${view === "list" ? " market-listing-card-list" : ""}`}>
+    <Link href={`/listing/${listing.id}?from=${encodeURIComponent(returnTo)}`} className={`market-listing-card${view === "list" ? " market-listing-card-list" : ""}`}>
       <ListingImage src={conditionPhoto?.url} title={listing.title} verified={listing.aiVerified} />
       <div className="listing-content">
         <p className="listing-spec">{categoryLabels[listing.category]} <span aria-hidden="true">·</span> {listing.spec}</p>

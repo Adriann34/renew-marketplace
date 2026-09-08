@@ -25,7 +25,7 @@ export function SavedListingCard({ listing }: { listing: ListingWithRelations })
 
   return (
     <div className="min-w-0">
-      <ListingCard listing={listing} />
+      <ListingCard listing={listing} returnTo="/account?tab=saved" />
       <div className="saved-listing-actions">
         <Button variant="quiet" size="small" className="w-full" onClick={handleRemove} disabled={pending}>
           {pending ? "Removing…" : "Remove from saved"}

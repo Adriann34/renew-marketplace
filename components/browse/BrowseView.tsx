@@ -34,6 +34,7 @@ export function BrowseView({
   totalCount,
   initialCategory,
   initialSearch,
+  returnTo,
 }: {
   listings: ListingWithRelations[];
   categoryOrder: Category[];
@@ -41,6 +42,7 @@ export function BrowseView({
   totalCount: number;
   initialCategory: CategoryTab;
   initialSearch: string;
+  returnTo: string;
 }) {
   const { displayCurrency, toDisplay } = useCurrency();
   // Price filters/sorts operate in the viewer's display currency, so a listing
@@ -337,7 +339,7 @@ export function BrowseView({
               className={view === "grid" ? "grid sm:grid-cols-2 xl:grid-cols-3 gap-6" : "flex flex-col gap-4"}
             >
               {pageItems.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} view={view} />
+                <ListingCard key={listing.id} listing={listing} view={view} returnTo={returnTo} />
               ))}
             </div>
           ) : (

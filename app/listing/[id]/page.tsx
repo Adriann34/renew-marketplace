@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { PageShell } from "@/components/ui/Page";
 import { ButtonLink } from "@/components/ui/Button";
 import { DiagnosticTag } from "@/components/DiagnosticTag";
@@ -15,6 +14,8 @@ import { parseAiVerdict } from "@/lib/aiVerify";
 import { isListingSaved } from "@/lib/saved";
 import { createClient } from "@/lib/supabase/server";
 import { Price } from "@/components/Price";
+import { ListingBackLink } from "@/components/listing/ListingBackLink";
+import { isSafeInternalPath, safeInternalPath } from "@/lib/navigation";
 import type { PhotoKind } from "@prisma/client";
 
 const PHOTO_KIND_LABELS: Record<PhotoKind, string> = {
@@ -28,10 +29,16 @@ const PHOTO_KIND_ORDER: PhotoKind[] = ["CONDITION", "BURN_IN", "BENCHMARK", "BOO
 
 export default async function ListingPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { id } = await params;
+  const { from } = await searchParams;
+  const returnTo = safeInternalPath(from, "/browse");
+  const restoreHistory = isSafeInternalPath(from);
+  const listingPath = `/listing/${id}?from=${encodeURIComponent(returnTo)}`;
   const listing = await getListingById(id);
   if (!listing) notFound();
 
@@ -58,12 +65,7 @@ export default async function ListingPage({
     <PageShell>
 
       <div className="mb-8">
-        <Link
-          href="/#listings"
-          className="inline-flex items-center gap-2 text-[13px] text-ink-dim hover:text-ink transition-colors"
-        >
-          ← Back to listings
-        </Link>
+        <ListingBackLink href={returnTo} restoreHistory={restoreHistory} />
       </div>
 
       <div className="listing-detail">
@@ -82,7 +84,7 @@ export default async function ListingPage({
               <p className="text-[14px] font-medium truncate">{sellerLabel}</p>
               <p className="text-[12px] text-ink-dim truncate">{listing.location}</p>
             </div>
-            {!isOwner && <MessageSellerButton listingId={listing.id} />}
+            {!isOwner && <MessageSellerButton listingId={listing.id} listingPath={listingPath} />}
           </div>
 
           {listing.description && (
@@ -98,7 +100,7 @@ export default async function ListingPage({
               <span className="text-[12px] text-ink-dim">This is your listing.</span>
               <div className="flex items-center gap-2">
                 <ButtonLink
-                  href={`/listing/${listing.id}/edit`}
+                  href={`/listing/${listing.id}/edit?from=${encodeURIComponent(returnTo)}`}
                   variant="secondary" size="small"
                 >
                   Edit
@@ -124,7 +126,7 @@ export default async function ListingPage({
             <h1 className="listing-title">
               {listing.title}
             </h1>
-            <ListingActions listingId={listing.id} initialSaved={initialSaved} />
+            <ListingActions listingId={listing.id} initialSaved={initialSaved} listingPath={listingPath} />
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mt-5 mb-6">
@@ -168,7 +170,7 @@ export default async function ListingPage({
 
           {!isOwner && (
             <div className="mb-6">
-              <BuyNowButton listingId={listing.id} />
+              <BuyNowButton listingId={listing.id} listingPath={listingPath} />
             </div>
           )}
 

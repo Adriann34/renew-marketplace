@@ -17,7 +17,7 @@ import type { ListingWithRelations } from "@/lib/listings";
 
 const initialState: UpdateListingState = { error: null };
 
-export function EditListingForm({ listing }: { listing: ListingWithRelations }) {
+export function EditListingForm({ listing, returnTo }: { listing: ListingWithRelations; returnTo: string }) {
   const [state, formAction, isPending] = useActionState(updateListingAction, initialState);
   const [photos, setPhotos] = useState<PhotosState>(() => photosStateFromExisting(listing.photos));
   const [removedPhotoIds, setRemovedPhotoIds] = useState<string[]>([]);
@@ -50,6 +50,7 @@ export function EditListingForm({ listing }: { listing: ListingWithRelations }) 
     <form action={formAction}>
       <input type="hidden" name="id" value={listing.id} />
       <input type="hidden" name="category" value={category} />
+      <input type="hidden" name="returnTo" value={returnTo} />
       {removedPhotoIds.map((id) => (
         <input key={id} type="hidden" name="removedPhotoIds" value={id} />
       ))}

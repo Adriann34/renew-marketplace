@@ -1,9 +1,20 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 export function MobileNav({ children }: { children: ReactNode }) {
   const disclosure = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (!disclosure.current?.contains(event.target as Node)) {
+        disclosure.current?.removeAttribute("open");
+      }
+    }
+
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
+  }, []);
 
   return (
     <details
@@ -16,7 +27,11 @@ export function MobileNav({ children }: { children: ReactNode }) {
         }
       }}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null) && disclosure.current) {
+        if (
+          event.relatedTarget &&
+          !event.currentTarget.contains(event.relatedTarget as Node) &&
+          disclosure.current
+        ) {
           disclosure.current.open = false;
         }
       }}

@@ -3,13 +3,15 @@ import { Button } from "@/components/ui/Button";
 
 import { createClient } from "@/lib/supabase/client";
 
-export function GoogleSignInButton() {
+export function GoogleSignInButton({ nextPath = "/" }: { nextPath?: string }) {
   async function handleClick() {
     const supabase = createClient();
+    const callbackUrl = new URL("/auth/callback", window.location.origin);
+    callbackUrl.searchParams.set("next", nextPath);
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl.toString(),
         // Force Google's account chooser every time. Without this, a browser
         // with a single active Google session auto-selects it and skips the
         // picker, so a signed-out user can't switch accounts.

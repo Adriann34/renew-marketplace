@@ -74,6 +74,7 @@ export default async function ConversationPage({
               category={active.listing.category}
               spec={active.listing.spec}
               thumbnailUrl={thumbnailUrl}
+              returnTo={`/messages/${id}`}
             />
           </div>
         </MessagesShell>

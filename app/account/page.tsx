@@ -19,12 +19,13 @@ export default async function AccountPage({
   const initialTab: AccountTab = ACCOUNT_TABS.includes(tab as AccountTab)
     ? (tab as AccountTab)
     : "listings";
+  const accountPath = initialTab === "listings" ? "/account" : `/account?tab=${initialTab}`;
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/signin?next=/account");
+  if (!user) redirect(`/signin?next=${encodeURIComponent(accountPath)}`);
 
   const [dbUser, listings, saved] = await Promise.all([
     prisma.user.findUnique({ where: { id: user.id } }),
