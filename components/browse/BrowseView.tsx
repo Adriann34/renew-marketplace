@@ -196,7 +196,7 @@ export function BrowseView({
   return (
     <>
       <div className="browse-heading">
-        <PageHeading eyebrow="The marketplace" title="Find your next build." description="Good hardware, ready for another chapter." />
+        <PageHeading title="Find your next build." description="Good hardware, ready for another chapter." />
         <div className="browse-search">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-ink-dim shrink-0" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></svg>
           <input
