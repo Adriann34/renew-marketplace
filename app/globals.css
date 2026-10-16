@@ -128,15 +128,12 @@ body {
 [data-theme="dark"] .hero-artwork-dark { visibility: visible; }
 .hero-copy { width: 56%; min-width: 0; padding-block: 24px; }
 .section-eyebrow { font-size: 12px; line-height: 1.5; font-weight: 500; color: var(--ink-dim); margin-bottom: 24px; }
-.hero-copy .section-eyebrow { display: block; margin-bottom: 24px; color: #52635b; font-size: 10px; line-height: 1.5; }
-[data-theme="dark"] .hero-copy .section-eyebrow { color: var(--ink-dim); }
 .hero-copy h1 { font-family: var(--font-display); font-size: clamp(44px, 4.3vw, 76px); font-weight: 500; line-height: 1.07; letter-spacing: -.055em; text-wrap: balance; }
 .hero-description { margin-top: 24px; max-width: 420px; color: var(--ink-dim); font-size: 15px; line-height: 1.8; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 32px; }
 .hero-actions .ui-button-primary { padding-inline: 24px; }
 .hero-sell-link { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; font-size: 13px; font-weight: 500; color: var(--ink); }
 .hero-sell-link:hover { text-decoration: underline; text-underline-offset: 5px; }
-.hero-note { width: 84%; max-width: 1680px; display: flex; justify-content: space-between; gap: 16px; padding-top: 28px; color: var(--ink-dim); font-size: 11px; line-height: 1.6; }
 .home-listings { padding-bottom: 72px; }
 .category-links { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 0 28px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
 .category-link { display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-height: 42px; padding: 8px 17px; border: 1px solid transparent; border-radius: 24px; font-size: 13px; color: var(--ink-dim); transition: background-color 160ms ease, border-color 160ms ease; }
@@ -178,7 +175,6 @@ body {
 .trust-item p { color: var(--ink-dim); font-size: 14px; line-height: 1.8; max-width: 310px; }
 .sell-section { padding-bottom: 72px; }
 .sell-panel { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 44px 48px; background: var(--bg-inset); border: 1px solid transparent; border-radius: 20px; }
-.sell-panel .section-eyebrow { margin-bottom: 14px; }
 .sell-panel h2 { max-width: 480px; font-family: var(--font-display); font-size: 34px; line-height: 1.2; letter-spacing: -1px; font-weight: 500; }
 .sell-panel p:not(.section-eyebrow) { color: var(--ink-dim); font-size: 14px; line-height: 1.8; margin-top: 16px; max-width: 450px; }
 .sell-panel .ui-button { flex-shrink: 0; }
@@ -275,7 +271,7 @@ body {
   .hero-actions { margin-top: 24px; gap: 8px 20px; }
   .hero-artwork { position: relative; inset: auto; z-index: 0; width: 100%; max-width: 640px; aspect-ratio: 1.35; flex-shrink: 0; mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent), linear-gradient(to bottom, transparent, black 8%, black 98%, transparent); mask-composite: intersect; }
   .hero-artwork img { width: 200% !important; height: auto !important; max-width: none; left: -100% !important; top: 50% !important; transform: translateY(-54%); }
-  .market-header-overlay .market-nav, .hero-note { width: calc(100% - 64px); }
+  .market-header-overlay .market-nav { width: calc(100% - 64px); }
 }
 @media (max-width: 767px) {
   .home-hero { margin-bottom: 24px; }
@@ -283,8 +279,7 @@ body {
   .hero-copy { width: calc(100% - 40px); }
   .hero-copy h1 { font-size: clamp(40px, 8vw, 56px); }
   .hero-description { margin-top: 20px; max-width: 360px; }
-  .market-header-overlay .market-nav, .hero-note { width: calc(100% - 40px); }
-  .hero-note { padding-top: 20px; font-size: 10px; flex-wrap: wrap; }
+  .market-header-overlay .market-nav { width: calc(100% - 40px); }
 }
 
 /* Shared controls retain the landing page's shape in every workflow. */

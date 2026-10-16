@@ -7,7 +7,7 @@ export function Footer() {
         <div className="footer-main">
           <div className="footer-brand">
             <Link href="/" className="market-wordmark" aria-label="Renew home">renew</Link>
-            <p>Good hardware deserves another chapter.</p>
+            <p>Good hardware deserves another chapter</p>
           </div>
           <nav aria-label="Footer marketplace">
             <h2>Marketplace</h2>
@@ -28,7 +28,7 @@ export function Footer() {
             <Link href="/sell">Sell your hardware</Link>
           </nav>
         </div>
-        <div className="footer-bottom"><span>© {new Date().getFullYear()} Renew</span><span>Built for the next build.</span></div>
+        <div className="footer-bottom"><span>© {new Date().getFullYear()} Renew</span><span>Plan your next build.</span></div>
       </div>
     </footer>
   );

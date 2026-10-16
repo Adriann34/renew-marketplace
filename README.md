@@ -1,168 +1,53 @@
 # Renew
 
-Renew is a marketplace for buying and selling used PC hardware — GPUs,
-CPUs, and everything in between. Instead of stock photos and seller
-claims, every listing carries a diagnostic report (condition grade,
-benchmark score, tested power draw) filled in by the seller, backed by
-photo proof, so buyers can trust a used part before it ships. Buyers and
-sellers can then message each other directly, scoped to that one listing.
+Renew is a marketplace for secondhand PC hardware. Sellers pair each listing with a condition report and proof photos, giving buyers more to go on than a product name and a price. Buyers can compare parts, save listings, and talk directly with sellers before arranging a purchase.
 
-Personal project I built it because I wanted to make a marketplace app since my hobby was selling used gpus. Auth (including password reset), real
-Prisma-backed listings (browse/filter/create/edit/delete/save), the
-account dashboard, and listing-scoped realtime chat are all live. Payments
-are next.
+![Renew homepage in dark mode](./public/renew-home-dark.webp)
 
-## Tech stack
+## What the app does
 
-- **Next.js 15** (App Router) + **TypeScript** + **React 19**
-- **Tailwind CSS v4** — CSS-first config, no `tailwind.config.js`
-- **Prisma** + **Supabase Postgres** — all data access, no separate API layer
-- **Supabase Auth** — email/password (incl. reset) + Google OAuth
-- **Supabase Storage** — listing photos, chat attachments, avatars (compressed via `sharp`)
-- **Supabase Realtime** — live chat message delivery
+- **List and discover hardware.** Sellers can create, edit, mark as sold, and remove listings. Buyers can search and filter by category, condition, location, price, power draw, and photo verification status.
+- **Show the evidence.** Listings include seller-entered diagnostics such as condition grade, benchmark score, power draw, and boot status, alongside photos organized by proof type.
+- **Connect buyers and sellers.** Each conversation belongs to a listing. Messages arrive through Supabase Realtime, and image attachments are stored privately and served only to conversation participants.
+- **Support different currencies.** Sellers set an asking price in a supported currency. Buyers can view an approximate conversion in their preferred currency while the original asking price stays visible.
+- **Help sellers prepare a listing.** When a Gemini API key is configured, sellers can ask AI to suggest diagnostic fields from their photos. Renew also checks whether the photos support the published claims and shows the result on the listing. Listing creation still works when AI is unavailable.
+- **Manage an account.** Users can save listings, manage their own listings, update profile details, and set a preferred display currency. The FAQ includes an optional, signed-in support chat grounded in the site's help content.
 
-## Project structure
+The **Buy Now** button opens a conversation with the seller. Renew does not currently process checkout or payments; buyers and sellers arrange the transaction directly.
 
-```
-app/
-  layout.tsx              Root layout: fonts, metadata, theme flash-prevention script
-  page.tsx                 Homepage — assembles Hero, CategoryStrip, listings grid, TrustBar, SellCta
-  globals.css                Tailwind v4 theme tokens — see "Design system" below
-  browse/                   Full listing browse page: category tabs, filters, sort, search, pagination
-  signin/, signup/          Auth pages (redirect home if already signed in)
-  forgot-password/          Request a password-reset email
-  reset-password/           Set a new password (reached via the emailed recovery link)
-  auth/callback/route.ts    Exchanges a Google OAuth or password-recovery code for a session
-  account/                  Seller dashboard — your listings / saved items / settings tabs
-  account/actions.ts          updateProfileAction, avatar upload — Server Actions for the settings tab
-  sell/                     Category picker (sell/page.tsx) → per-category create form (sell/[category]/)
-  sell/actions.ts             createListingAction — validates, uploads photos, writes the listing
-  listing/[id]/             Listing detail page
-  listing/[id]/edit/         Edit-listing page (owner-only)
-  listing/actions.ts         update/delete/toggle-status/toggle-save Server Actions
-  messages/                 Chat inbox (list + thread), realtime, listing-scoped
-  messages/actions.ts        start/send/mark-read Server Actions
-  about/, faq/              Static content pages
-  api/cities/route.ts       Offline city-search endpoint (backs LocationAutocomplete)
+## How it's built
 
-components/
-  Navbar, Hero, CategoryStrip, TrustBar, SellCta, Footer     Homepage/shared chrome
-  SearchBar                                                  Navbar search — submits to /browse?q=
-  ListingCard, ConditionBadge, DiagnosticTag                 Listing summary + the signature diagnostic readout
-  ThemeToggle                                                Light/dark switch
-  icons/GpuMark.tsx                                          Abstract SVG placeholder art (no brand imagery)
-  auth/           SignInForm, SignUpForm, GoogleSignInButton, SignOutButton,
-                  ForgotPasswordForm, UpdatePasswordForm
-  account/        AccountView (tabs) + ManageListingCard, SavedListingCard, SettingsPanel, AvatarUploadForm, MarkSoldButton
-  browse/         BrowseView (client-side filter/sort/search/paginate state), FilterSidebar
-  listing/        CreateListingForm, EditListingForm, ListingGallery, ListingActions,
-                  DeleteListingButton, MessageSellerButton, LocationAutocomplete,
-                  PhotoWorkspace, ListingPreviewCard
-  messages/       MessagesShell, ConversationList, ChatThread, MessageComposer, ContextPanel
+Renew uses **Next.js 15**, **React 19**, **TypeScript**, and **Tailwind CSS 4**. Server Components load marketplace data through Prisma; Server Actions handle listing, account, and messaging changes with server-side authentication and authorization checks. Supabase provides Postgres, email/password and Google authentication, Storage, and Realtime message delivery.
 
-lib/
-  prisma.ts                 Prisma client singleton (dev-safe against hot reload)
-  listings.ts, saved.ts, conversations.ts   Prisma query functions — no ORM/service layer, just functions
-  category.ts               Category order/labels + which diagnostic fields each category asks for
-  grade.ts                  Grade (A/B/C) labels and colors
-  listingValidation.ts      Shared field validation for create + edit listing forms
-  photoUpload.ts, chatUpload.ts, image.ts   Upload to Supabase Storage, compressed via sharp
-                            (see image.ts for compression target sizes per use case)
-  format.ts, chatFormat.ts  Display formatting (price, message timestamps)
-  supabase/
-    client.ts                Browser Supabase client
-    server.ts                 Server Component / Server Action Supabase client (cookie-based session)
-    middleware.ts              Session-refresh helper, called from the root middleware.ts
-    admin.ts                   Service-role client — bypasses RLS, server-only
+The listing and avatar images live in a public Storage bucket. Chat attachments use a separate private bucket and an authenticated route that checks conversation membership before serving an image. Images are compressed with `sharp` before upload. Gemini powers the optional photo and FAQ features; approximate currency conversion uses exchange rates from Frankfurter.
 
-prisma/
-  schema.prisma             User, Listing, ListingPhoto, SavedListing, Conversation, Message
-  migrations/               Applied migrations (see schema.prisma for the RLS note on Conversation/Message)
-  seed.ts                   Seeds placeholder sellers + listings for local dev
+The code is organized around user flows: routes and actions in `app/`, UI in `components/`, shared data and service code in `lib/`, and the database schema and migrations in `prisma/`.
 
-middleware.ts               Refreshes the Supabase session cookie on every request
-next.config.ts               Image remote patterns (*.supabase.co) + CSP headers
-.env.example                 Required env vars, copy to .env.local (and .env for the Prisma CLI)
-```
+## Run locally
 
-## How things connect
-
-**Auth.** Sign-in/sign-up/Google forms talk to Supabase Auth directly from
-the client — there's no `/api/login` route. Supabase sets session cookies,
-and root `middleware.ts` refreshes that session on every request. Server
-Components and Server Actions read the session server-side rather than
-trusting anything the client sends. Google OAuth and password-reset links
-both land on `app/auth/callback/route.ts`, which exchanges the code for a
-session before redirecting on.
-
-**Listings (read + write).** There's no REST/GraphQL API for listings —
-Server Components fetch via `lib/listings.ts` at render time and hand the
-data to client components for interactive bits (filters, save/share
-buttons). Writes go through `"use server"` Server Actions co-located as
-`actions.ts` next to the route that owns them. Every action re-checks auth
-(and ownership, for edits/deletes) itself, since the client is never
-trusted to only act on its own data.
-
-**Chat (realtime).** Messaging a seller finds-or-creates a conversation
-scoped to `(listing, buyer)` and opens `/messages/[id]`, which
-server-renders history and then subscribes client-side to Supabase
-Realtime for new messages. Sending a message is a Server Action
-(auth- and participant-checked); the other participant sees it arrive
-live through their own subscription.
-
-## Setup
+You'll need Node.js, npm, and a Supabase project. Start with the variables in [`.env.example`](./.env.example):
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in your Supabase project values
-cp .env.local .env           # the Prisma CLI reads .env, not .env.local
-npx prisma migrate dev       # creates/updates all tables, RLS policies, and Realtime setup
+cp .env.example .env.local
+```
+
+Fill in the database URLs, Supabase project URL, publishable key, and server-only secret key in `.env.local`, then copy it to `.env` for the Prisma CLI:
+
+```bash
+cp .env.local .env
+```
+
+Next.js reads `.env.local`. `GEMINI_API_KEY` is optional and enables photo verification, diagnostic autofill, and the FAQ support chat.
+
+In Supabase Storage, create a **public** bucket named `listing-photos` for listing photos and avatars. Configure Storage policies to allow authenticated users to upload and remove photos through the app. This bucket is not created by the Prisma migrations. Create the **private** chat attachment bucket with the included script:
+
+```bash
+npm run setup:chat-bucket
+npm run prisma:migrate
 npm run dev
 ```
 
-Open http://localhost:3000. Optionally seed demo data:
+Open [localhost:3000](http://localhost:3000). To add sample sellers and listings, run `npx prisma db seed`. Seed images are served from `public/demo/`; the seed does not upload them to Storage.
 
-```bash
-npx prisma db seed           # placeholder sellers + listings, see prisma/seed.ts
-```
-
-Other scripts: `npm run build` / `npm run start` (production), `npm run
-lint`, `npm run prisma:studio` (DB browser).
-
-The chat migration enables RLS and Realtime as part of `prisma migrate dev`
-itself — no separate manual Supabase dashboard step needed, as long as your
-project has Realtime enabled (on by default).
-
-## Design system
-
-The signature element is the **diagnostic tag** (`DiagnosticTag.tsx`) — a
-small inspection-sticker-style readout (grade, benchmark score, wattage
-draw, boot status) filled in by the seller and shown on the listing,
-backed by their own proof photos. `ConditionBadge.tsx` is the compact
-variant (grade only) used on grid cards. The idea: for *used* hardware,
-trust comes from data and evidence, not stock photography, so the design
-leans into that instead of a generic dark-mode tech-marketplace look.
-
-Theming (light/dark tokens, fonts) lives in `app/globals.css` as CSS
-variables fed into Tailwind v4's `@theme inline` — see the comments there
-for how that wiring works. Light is the default; `ThemeToggle.tsx` flips
-`[data-theme="dark"]` on `<html>` and persists the choice to
-`localStorage`. Fonts: Space Grotesk (display), Inter (body), JetBrains
-Mono (specs/prices/numbers).
-
-## Conventions worth knowing
-
-- Prices are USD, formatted via `formatPrice()` in `lib/format.ts` — don't
-  format currency inline.
-- Mutations are Server Actions, not API routes — look for `actions.ts`
-  next to the page that owns the flow you're changing.
-- Every Server Action re-checks auth (and ownership/participant status,
-  where relevant) itself. Never assume the client only calls an action
-  for its own data.
-- Photo compression always goes through `compressImage()` in
-  `lib/image.ts` — see that file for target sizes per use case.
-- RLS is deliberately narrow (see `prisma/schema.prisma`) — don't assume
-  it's protecting a table unless it's one of the ones noted there.
-- URL category slugs (`/sell/gpu`, `/browse?category=GPU`) are just the
-  lowercased `Category` enum value — see `categoryFromSlug()` in
-  `lib/category.ts`.
+For other workflows, use `npm run lint`, `npm run build`, or `npm run prisma:studio`. The build script applies pending Prisma migrations before building.

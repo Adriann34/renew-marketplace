@@ -8,7 +8,6 @@ export function Hero() {
       <div className="hero-stage">
         <div className="market-container hero-content">
           <div className="hero-copy">
-            <p className="section-eyebrow">A new life for good hardware</p>
             <h1 id="hero-heading">Your next build<br />starts here</h1>
             <p className="hero-description">Discover used PC hardware. Find the right parts. Make something yours.</p>
             <div className="hero-actions">
@@ -37,7 +36,6 @@ export function Hero() {
             />
           </div>
         </div>
-        <div className="market-container hero-note"><span>Buy thoughtfully. Build beautifully.</span><span>Pre-owned. Full of possibility.</span></div>
       </div>
     </section>
   );
