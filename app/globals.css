@@ -132,8 +132,7 @@ body {
 .hero-description { margin-top: 24px; max-width: 420px; color: var(--ink-dim); font-size: 15px; line-height: 1.8; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 32px; }
 .hero-actions .ui-button-primary { padding-inline: 24px; }
-.hero-sell-link { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; font-size: 13px; font-weight: 500; color: var(--ink); }
-.hero-sell-link:hover { text-decoration: underline; text-underline-offset: 5px; }
+.hero-actions .ui-button-secondary { border-color: var(--accent); color: var(--accent); }
 .home-listings { padding-bottom: 72px; }
 .category-links { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 0 28px; margin-bottom: 32px; border-bottom: 1px solid var(--line); }
 .category-link { display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-height: 42px; padding: 8px 17px; border: 1px solid transparent; border-radius: 24px; font-size: 13px; color: var(--ink-dim); transition: background-color 160ms ease, border-color 160ms ease; }
@@ -168,7 +167,7 @@ body {
 .listings-empty { padding: 56px 24px; border: 1px solid var(--line); border-radius: 12px; text-align: center; background: var(--bg-elevated); }
 .listings-empty h3 { font-family: var(--font-display); font-size: 24px; }
 .listings-empty p { color: var(--ink-dim); margin: 12px auto 24px; max-width: 400px; font-size: 15px; line-height: 1.7; }
-.trust-section { padding-block: 48px 64px; border-top: 1px solid var(--line); }
+.trust-section { padding-block: 48px 64px; border-top: 1px solid transparent; }
 .trust-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px; }
 .trust-item svg { width: 26px; height: 26px; color: var(--ink); margin-bottom: 20px; }
 .trust-item h3 { font-weight: 500; font-size: 16px; margin-bottom: 8px; }
@@ -196,10 +195,10 @@ body {
 @media (max-width: 1023px) {
   .market-container { width: calc(100% - 64px); }
   .market-nav { flex-wrap: wrap; gap: 0 24px; padding-block: 16px; }
-  .desktop-account, .desktop-browse { display: none; }
+  .desktop-account, .desktop-browse, .ui-button.nav-sell { display: none; }
   .market-search { order: 3; flex-basis: 100%; max-width: none; margin-top: 14px; }
   .mobile-nav { display: block; }
-  .mobile-nav summary { display: flex; align-items: center; justify-content: center; list-style: none; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+  .mobile-nav summary { display: flex; align-items: center; justify-content: center; list-style: none; width: 44px; height: 44px; border: 1px solid transparent; border-radius: 8px; cursor: pointer; }
   .mobile-nav summary::-webkit-details-marker { display: none; }
   .mobile-nav summary svg { width: 21px; height: 21px; }
   .mobile-nav[open] summary { background: var(--bg-inset); }

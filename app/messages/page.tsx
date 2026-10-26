@@ -24,7 +24,7 @@ export default async function MessagesPage() {
       <main id="main-content" className="market-container messages-content">
         <MessagesShell conversations={conversations} currentUserId={user.id}>
           <div className="flex-1 flex items-center justify-center p-10 text-center">
-            <EmptyState title="A good build starts with a conversation.">Select a conversation to ask questions and work out the details.</EmptyState>
+            <EmptyState title="Select a conversation">Choose a conversation to view your messages.</EmptyState>
           </div>
         </MessagesShell>
       </main>

@@ -35,8 +35,9 @@ export async function Navbar({ overlay = false }: { overlay?: boolean }) {
             {user ? <>{messages}<AccountMenu /></> : <Link href="/signin">Sign in</Link>}
             <ThemeToggle />
           </div>
-          <ButtonLink href="/sell" className="nav-sell">List an item <span aria-hidden="true">+</span></ButtonLink>
+          <ButtonLink href="/sell" className="nav-sell">List an item</ButtonLink>
           <MobileNav>
+            <Link href="/sell">List an item</Link>
             <Link href="/browse">Browse hardware</Link>
             {user ? <>
               {messages}

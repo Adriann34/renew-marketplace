@@ -45,11 +45,6 @@ export function SettingsPanel({
   return (
     <div className="form-stack">
       <section className="form-section">
-        <h3 className="mb-2">Profile information</h3>
-        <p className="text-ink-dim text-[13px] mb-5">
-          Shown to buyers and sellers you interact with on renew.
-        </p>
-
         <div className="mb-5 pb-5 border-b border-line">
           <AvatarUploadForm avatarUrl={avatarUrl} initials={(name || email).slice(0, 2).toUpperCase()} />
         </div>
@@ -98,7 +93,7 @@ export function SettingsPanel({
                 >
                   {CURRENCIES.map((c) => (
                     <option key={c.code} value={c.code}>
-                      {c.code} — {c.name}
+                      {c.code} - {c.name}
                     </option>
                   ))}
                 </Select>

@@ -46,7 +46,7 @@ export default async function AccountPage({
   return (
     <PageShell>
 
-      <PageHeading eyebrow="Account" title="My account" />
+      <PageHeading title="Account" />
 
       <AccountView profile={profile} listings={listings} saved={saved} initialTab={initialTab} />
 

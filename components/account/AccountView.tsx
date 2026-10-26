@@ -2,6 +2,7 @@
 import { Button, ButtonLink } from "@/components/ui/Button";
 
 import { useState } from "react";
+import Link from "next/link";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { ManageListingCard } from "@/components/account/ManageListingCard";
@@ -31,7 +32,7 @@ export function AccountView({
   saved: ListingWithRelations[];
   initialTab?: Tab;
 }) {
-  const [tab, setTab] = useState<Tab>(initialTab);
+  const tab = initialTab;
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   const displayName = profile.name || profile.email;
@@ -61,9 +62,9 @@ export function AccountView({
             { id: "saved", label: "Saved items", count: saved.length },
             { id: "settings", label: "Account settings" },
           ] as const).map((item) => (
-            <button key={item.id} type="button" onClick={() => setTab(item.id)} className="account-nav-item" aria-current={tab === item.id ? "page" : undefined}>
+            <Link key={item.id} href={item.id === "listings" ? "/account" : `/account?tab=${item.id}`} scroll={false} className="account-nav-item" aria-current={tab === item.id ? "page" : undefined}>
               {item.label}{"count" in item && <span className="ml-auto text-[12px] tabular-nums text-ink-dim">{item.count}</span>}
-            </button>
+            </Link>
           ))}
           <SignOutButton className="account-nav-item text-danger" />
         </nav>
@@ -72,7 +73,6 @@ export function AccountView({
         {tab === "listings" && <>
           <div className="account-toolbar">
             <h2>Your listings</h2>
-            <ButtonLink href="/sell" size="small">List an item <span aria-hidden="true">＋</span></ButtonLink>
           </div>
           <div className="segmented-control mb-6" aria-label="Listing status">
             {(["all", "ACTIVE", "SOLD"] as const).map((filter) => (
@@ -89,7 +89,7 @@ export function AccountView({
         </>}
         {tab === "saved" && <>
           <h2 className="account-title mb-7">Saved items</h2>
-          {saved.length === 0 ? <EmptyState title="Keep something in mind." action={<ButtonLink href="/browse" variant="secondary">Explore hardware</ButtonLink>}>Save a listing that catches your eye and find it here when you’re ready.</EmptyState> : (
+          {saved.length === 0 ? <EmptyState title="No saved items yet" action={<ButtonLink href="/browse" variant="secondary">Explore hardware</ButtonLink>}>Items you save will appear here.</EmptyState> : (
             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">{saved.map((listing) => <SavedListingCard key={listing.id} listing={listing} />)}</div>
           )}
         </>}

@@ -35,7 +35,7 @@ export function SearchBar() {
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search hardware…"
+        placeholder="Search Renew"
         aria-label="Search listings"
         className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-ink-dim outline-none"
       />

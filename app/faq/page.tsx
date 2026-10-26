@@ -15,7 +15,7 @@ export default async function FaqPage() {
   return (
     <>
       <PageShell width="reading">
-        <PageHeading eyebrow="Helpful to know" title="Frequently asked questions" description="A little more clarity for your next purchase or sale." />
+        <PageHeading title="Frequently asked questions" />
           <div className="editorial-sections">
             {faqSections.map((section) => (
               <section key={section.id} id={section.id} className="editorial-section">

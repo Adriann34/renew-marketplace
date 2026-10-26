@@ -23,9 +23,6 @@ export function ContextPanel({
   return (
     <aside className="hidden xl:flex w-60 shrink-0 border-l border-line p-5 flex-col gap-6 overflow-y-auto">
       <div className="min-w-0">
-        <p className="font-body text-[10.5px] text-ink-dim mb-2.5">
-          Listing
-        </p>
         <div className="aspect-16/10 mb-2.5 overflow-hidden rounded-xl border border-line bg-bg">
           {thumbnailUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -56,8 +53,7 @@ export function ContextPanel({
           Stay protected
         </div>
         <p className="text-[12px] text-ink-dim leading-relaxed">
-          Keep the deal inside Renew. Never wire money or pay outside the app, even if
-          you&apos;re asked to — inspect the item against its diagnostic report first.
+          Keep payments on Renew. Inspect the item and check its diagnostic report before buying.
         </p>
       </div>
     </aside>
