@@ -117,8 +117,8 @@ body {
 .ui-button.nav-sell { min-height: 42px; padding: 10px 16px; gap: 20px; font-size: 13px; }
 .mobile-nav { display: none; }
 /* A viewport-height studio surface, with artwork and copy in separate cells. */
-.home-hero { --hero-bg: #f0ede6; background: var(--hero-bg); margin-bottom: 48px; }
-[data-theme="dark"] .home-hero { --hero-bg: #101010; }
+.home-hero { --hero-bg: var(--bg); background: var(--hero-bg); margin-bottom: 48px; }
+[data-theme="dark"] .home-hero { --hero-bg: var(--bg); }
 .hero-stage { position: relative; isolation: isolate; display: flex; flex-direction: column; justify-content: center; min-height: max(640px, 100svh); padding-block: 132px 28px; color: var(--ink); }
 .hero-content { display: flex; align-items: center; flex: 1; width: 84%; max-width: 1680px; }
 .hero-artwork { position: absolute; inset: 0; z-index: -1; overflow: hidden; }

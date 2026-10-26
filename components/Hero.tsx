@@ -18,7 +18,7 @@ export function Hero() {
           <div className="hero-artwork" role="img" aria-label="Editorial illustration of a silver graphics card, processor, and memory on a studio plinth">
             <Image
               className="hero-artwork-light"
-              src="/renew-hardware-studio-light-v3.webp"
+              src="/renew-hardware-studio-light-v5.webp"
               alt=""
               fill
               sizes="(max-width: 1023px) 1280px, 100vw"
@@ -27,7 +27,7 @@ export function Hero() {
             />
             <Image
               className="hero-artwork-dark"
-              src="/renew-hardware-studio-dark-v3.webp"
+              src="/renew-hardware-studio-dark-v5.webp"
               alt=""
               fill
               sizes="(max-width: 1023px) 1280px, 100vw"
