@@ -15,7 +15,8 @@ const loadAction = runInThisContext(`(function(require, exports) { ${source}\n})
   filename: actionPath.pathname,
 });
 
-function harness({ user = { id: "seller-a" }, sellerId = "seller-a", failSave = false } = {}) {
+function harness({ user = { id: "seller-a" }, sellerId = "seller-a", failSave = false,
+  aiEnabled = true, overBudget = true, aiResult = null, listingFields = {} } = {}) {
   const photo = (id, listingId, kind = "CONDITION") => ({
     id, listingId, kind,
     url: `https://example.supabase.co/storage/v1/object/public/listing-photos/${listingId}/${id}.webp`,
@@ -32,6 +33,8 @@ function harness({ user = { id: "seller-a" }, sellerId = "seller-a", failSave = 
     price: 10, currency: "USD", grade: "A", spec: "Part", location: "Manila",
     description: "Test description", bootVerified: false, benchmarkLabel: "",
     benchmarkScore: 0, wattageDraw: 0,
+    aiVerified: true, aiVerdict: { status: "verified" }, aiCheckedAt: new Date("2026-01-01"),
+    ...listingFields,
     photos: photos.filter((p) => p.listingId === "listing-a"),
   };
   const redirectError = new Error("redirect");
@@ -39,7 +42,8 @@ function harness({ user = { id: "seller-a" }, sellerId = "seller-a", failSave = 
   const upload = mock.fn(async (_supabase, listingId, kind) => ({
     kind, path: `${listingId}/new.webp`, url: `/demo/new.webp`,
   }));
-  const aiBudget = mock.fn(async () => true);
+  const aiBudget = mock.fn(async () => overBudget);
+  const verify = mock.fn(async () => aiResult);
   const prisma = {
     listing: {
       findUnique: mock.fn(async () => listing),
@@ -73,7 +77,10 @@ function harness({ user = { id: "seller-a" }, sellerId = "seller-a", failSave = 
     },
     "@/lib/prisma": { prisma },
     "@/lib/photoUpload": { ...require("@/lib/photoUpload"), uploadPhoto: upload },
-    "@/lib/aiVerify": { isAiVerificationEnabled: () => true },
+    "@/lib/aiVerify": {
+      isAiVerificationEnabled: () => aiEnabled, verifyListingClaims: verify,
+      PHOTO_KIND_LABEL: { CONDITION: "Condition", BENCHMARK: "Benchmark screenshot" },
+    },
     "@/lib/rateLimit": {
       enforceUploadBudget: async () => false,
       enforceAiBudget: aiBudget,
@@ -83,11 +90,13 @@ function harness({ user = { id: "seller-a" }, sellerId = "seller-a", failSave = 
   const actions = {};
   loadAction((id) => Object.hasOwn(stubs, id) ? stubs[id] : require(id), actions);
 
-  async function save(ids = [], { replacement = false } = {}) {
+  async function save(ids = [], { replacement = false, fields = {} } = {}) {
     const form = new FormData();
-    for (const field of ["id", "category", "title", "price", "currency", "grade", "spec", "location", "description"]) {
+    for (const field of ["id", "category", "title", "price", "currency", "grade", "spec", "location", "description", "benchmarkLabel", "benchmarkScore", "wattageDraw"]) {
       form.set(field, String(listing[field]));
     }
+    form.set("bootVerified", listing.bootVerified ? "on" : "");
+    for (const [key, value] of Object.entries(fields)) form.set(key, String(value));
     for (const id of ids) form.append("removedPhotoIds", id);
     if (replacement) form.append("photos_condition", new File(["image"], "photo.png", { type: "image/png" }));
     try {
@@ -97,7 +106,69 @@ function harness({ user = { id: "seller-a" }, sellerId = "seller-a", failSave = 
       return { redirected: true };
     }
   }
-  return { save, prisma, remove, upload, aiBudget, originalPhotos, photos: () => photos };
+  return { save, prisma, remove, upload, aiBudget, verify, originalPhotos, photos: () => photos };
+}
+
+function assertCleared(h) {
+  const data = h.prisma.listing.update.mock.calls[0].arguments[0].data;
+  assert.equal(data.aiVerified, false);
+  assert.equal(data.aiVerdict, require("@prisma/client").Prisma.DbNull);
+  assert.equal(data.aiCheckedAt, null);
+}
+
+for (const [field, value] of Object.entries({
+  title: "Different part", spec: "Different spec", grade: "B", description: "New description",
+  benchmarkLabel: "Another benchmark", benchmarkScore: 12000, wattageDraw: 300, bootVerified: "",
+})) {
+  for (const aiEnabled of [true, false]) {
+    test(`${field} changes clear verification with AI ${aiEnabled ? "over budget" : "disabled"}`, async () => {
+      const h = harness({ aiEnabled, listingFields: {
+        category: "GPU", benchmarkLabel: "Time Spy", benchmarkScore: 10000, wattageDraw: 250, bootVerified: true,
+      } });
+      assert.deepEqual(await h.save([], { fields: { [field]: value } }), { redirected: true });
+      assertCleared(h);
+      assert.equal(h.aiBudget.mock.callCount(), aiEnabled ? 1 : 0);
+      assert.equal(h.verify.mock.callCount(), 0);
+    });
+  }
+}
+
+for (const options of [{}, { fields: { price: 20 } }, { fields: { currency: "PHP" } }, { fields: { location: "Oslo" } }]) {
+  test(`unrelated edits preserve verification: ${JSON.stringify(options)}`, async () => {
+    const h = harness();
+    await h.save([], options);
+    const data = h.prisma.listing.update.mock.calls[0].arguments[0].data;
+    for (const field of ["aiVerified", "aiVerdict", "aiCheckedAt"]) assert.equal(Object.hasOwn(data, field), false);
+    assert.equal(h.aiBudget.mock.callCount(), 0);
+  });
+}
+
+for (const [ids, options] of [[["detail-a"], {}], [[], { replacement: true }]]) {
+  test(`photo changes clear verification with AI disabled: ${JSON.stringify({ ids, options })}`, async () => {
+    const h = harness({ aiEnabled: false });
+    await h.save(ids, options);
+    assertCleared(h);
+    assert.equal(h.aiBudget.mock.callCount(), 0);
+  });
+}
+
+for (const result of [null, { verified: true, status: "verified" }, { verified: false, status: "flagged" }]) {
+  test(`changed claims save the fresh AI result or clear a failed check: ${JSON.stringify(result)}`, async () => {
+    const h = harness({ overBudget: false, aiResult: result });
+    // Remove the only remote photo so the real gatherer uses the new upload without network access.
+    await h.save(["detail-a"], { replacement: true, fields: { title: "New title", spec: "New spec" } });
+    assert.equal(h.verify.mock.callCount(), 1);
+    const [claims, images] = h.verify.mock.calls[0].arguments;
+    assert.equal(claims.title, "New title");
+    assert.equal(claims.spec, "New spec");
+    assert.equal(images.length, 1);
+    const data = h.prisma.listing.update.mock.calls[0].arguments[0].data;
+    if (result) {
+      assert.equal(data.aiVerified, result.verified);
+      assert.deepEqual(data.aiVerdict, result);
+      assert.ok(data.aiCheckedAt instanceof Date);
+    } else assertCleared(h);
+  });
 }
 
 for (const [name, ids] of [

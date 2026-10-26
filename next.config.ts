@@ -17,7 +17,8 @@ const nextConfig: NextConfig = {
   async headers() {
     // Supabase JS calls the project's REST/Auth/Storage endpoints from the
     // browser, and listing photos are served from Supabase Storage — both
-    // live under *.supabase.co, matching the remotePatterns above.
+    // live under *.supabase.co, matching the remotePatterns above. Realtime
+    // uses the same hosts over secure WebSockets.
     // 'unsafe-inline' on script/style is a deliberate trade-off: the
     // theme-flash-prevention script in app/layout.tsx and the inline
     // style={{width}} bar in ListingPreviewCard both need it, and there's
@@ -37,7 +38,7 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://*.supabase.co",
       "font-src 'self'",
-      "connect-src 'self' https://*.supabase.co",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",

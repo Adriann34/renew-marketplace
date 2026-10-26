@@ -212,6 +212,8 @@ export async function updateListingAction(
   // so the stored verdict can never go stale against edited claims. If a re-check is due
   // but can't produce a result, we CLEAR the verdict rather than leave a misleading one.
   const claimsChanged =
+    title !== listing.title ||
+    spec !== listing.spec ||
     grade !== listing.grade ||
     benchmarkScore !== listing.benchmarkScore ||
     benchmarkLabel !== listing.benchmarkLabel ||
@@ -221,11 +223,11 @@ export async function updateListingAction(
   const photosChanged = uploaded.length > 0 || removedPhotoIds.length > 0;
 
   let aiFields: Prisma.ListingUpdateInput = {};
-  if (isAiVerificationEnabled() && (claimsChanged || photosChanged)) {
+  if (claimsChanged || photosChanged) {
     // A re-check is due. Skip the model call when we're over the AI budget (cost
     // control), but still CLEAR the old verdict below — a stale "verified" must
     // never survive edited claims, and being over budget is not a pass.
-    const underBudget = !(await enforceAiBudget(user.id, await clientIp()));
+    const underBudget = isAiVerificationEnabled() && !(await enforceAiBudget(user.id, await clientIp()));
     // gatherEditAiImages reads the new uploads straight from the form, so here we
     // pass only the KEPT pre-existing photos (fetched from their URLs) — no double-count.
     const aiResult = underBudget
