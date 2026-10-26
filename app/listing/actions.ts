@@ -158,7 +158,9 @@ export async function updateListingAction(
     wattageDraw,
   } = parsed.fields;
 
-  const removedPhotoIds = formData.getAll("removedPhotoIds").map(String).filter(Boolean);
+  const requestedPhotoIds = new Set(formData.getAll("removedPhotoIds").map(String));
+  const removedPhotos = listing.photos.filter((p) => requestedPhotoIds.has(p.id));
+  const removedPhotoIds = removedPhotos.map((p) => p.id);
   const remainingPhotos = listing.photos.filter((p) => !removedPhotoIds.includes(p.id));
 
   const newConditionFiles = formData
@@ -202,7 +204,6 @@ export async function updateListingAction(
     return { error: "Failed to upload one or more photos. Please try again." };
   }
 
-  const removedPhotos = listing.photos.filter((p) => removedPhotoIds.includes(p.id));
   const removedStoragePaths = removedPhotos
     .map((p) => storagePathFromUrl(p.url))
     .filter((p): p is string => Boolean(p));
@@ -255,7 +256,7 @@ export async function updateListingAction(
   try {
     await prisma.$transaction([
       ...(removedPhotoIds.length > 0
-        ? [prisma.listingPhoto.deleteMany({ where: { id: { in: removedPhotoIds } } })]
+        ? [prisma.listingPhoto.deleteMany({ where: { listingId, id: { in: removedPhotoIds } } })]
         : []),
       prisma.listing.update({
         where: { id: listingId },
