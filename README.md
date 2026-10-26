@@ -51,14 +51,3 @@ npm run dev
 Open [localhost:3000](http://localhost:3000). To add sample sellers and listings, run `npx prisma db seed`. Seed images are served from `public/demo/`; the seed does not upload them to Storage.
 
 For other workflows, use `npm run lint`, `npm run build`, or `npm run prisma:studio`. The build script applies pending Prisma migrations before building.
-
-After deploying the chat/verification repair, preview the one-time active-listing
-recheck with `npm run verify:existing`. Run `npm run verify:existing -- --apply`
-to check their existing photos with Gemini and save fresh verdicts. This respects
-the AI budgets and reports failed or changed listings; it does not guarantee a
-Verified badge. Demo images are read from `public/demo/`. Run this command from
-the project root with the normal environment files present.
-Reruns skip listings with a completed check (`aiCheckedAt` is set), so a budget
-limit or partial failure can be retried without repeating successful checks.
-After the batch succeeds, the maintenance script and npm command can be removed;
-keep the applied database migration in the repository.

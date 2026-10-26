@@ -12,7 +12,6 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "verify:existing": "node --conditions=react-server --import tsx --env-file=.env --env-file=.env.local scripts/reverify-listings.ts",
     "setup:chat-bucket": "tsx --env-file=.env --env-file=.env.local scripts/setup-chat-bucket.ts"
   },
   "prisma": {
@@ -26,7 +25,6 @@
     "next": "^15.5.28",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "server-only": "^0.0.1",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
