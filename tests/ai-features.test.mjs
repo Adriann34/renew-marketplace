@@ -125,3 +125,34 @@ test("all AI features skip provider requests when no API key is configured", asy
   assert.equal(await autofillDiagnostics(images), null);
   assert.equal(fetch.mock.callCount(), 0);
 });
+
+test("durable support rejects a truncated stream even after receiving text", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response(
+    `data: ${JSON.stringify({ candidates: [{ content: { parts: [{ text: "Partial answer" }] } }] })}\n\n`,
+  ));
+  const chunks = [];
+  await assert.rejects(async () => {
+    for await (const chunk of streamSupportAnswer([{ role: "user", content: "Hello" }], undefined, { requireComplete: true })) chunks.push(chunk);
+  }, /Incomplete support response/);
+  assert.deepEqual(chunks, ["Partial answer"]);
+});
+
+test("durable support accepts a finish marker split across network chunks", async (t) => {
+  const payload = `data: ${JSON.stringify({ candidates: [{ content: { parts: [{ text: "Complete answer" }] }, finishReason: "STOP" }] })}\n\n`;
+  t.mock.method(globalThis, "fetch", async () => new Response(new ReadableStream({ start(controller) {
+    const encoder = new TextEncoder();
+    controller.enqueue(encoder.encode(payload.slice(0, -8)));
+    controller.enqueue(encoder.encode(payload.slice(-8)));
+    controller.close();
+  } })));
+  const chunks = [];
+  for await (const chunk of streamSupportAnswer([{ role: "user", content: "Hello" }], undefined, { requireComplete: true })) chunks.push(chunk);
+  assert.equal(chunks.join(""), "Complete answer");
+});
+
+test("durable support rejects malformed events instead of saving missing text", async (t) => {
+  t.mock.method(globalThis, "fetch", async () => new Response('data: {broken}\n\n'));
+  await assert.rejects(async () => {
+    for await (const chunk of streamSupportAnswer([{ role: "user", content: "Hello" }], undefined, { requireComplete: true })) void chunk;
+  }, /Invalid support response/);
+});

@@ -14,8 +14,8 @@ export type { SupportMessage, SupportRole } from "@/lib/supportChat";
  * support chat lives here — the route handler and UI only see plain text chunks.
  *
  * Best-effort like aiVerify: if the key is unset or the request fails, the
- * generator simply yields nothing and the caller degrades gracefully. It never
- * throws.
+ * generator yields nothing on failure unless the caller requires a confirmed
+ * complete response before saving a durable transcript.
  */
 
 const GEMINI_STREAM_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent`;
@@ -53,15 +53,15 @@ function buildSystemInstruction(): string {
 type GeminiContent = { role: "user" | "model"; parts: { text: string }[] };
 
 /**
- * Streams the assistant's answer as plain-text chunks. Yields nothing (and never
- * throws) if support chat is disabled or the upstream call fails, so the route
- * handler can substitute a friendly fallback.
+ * Streams text chunks. Durable chat callers require an explicit finish marker;
+ * interrupted output must never be recorded as a complete assistant answer.
  *
  * `signal` lets the caller abort when the client disconnects.
  */
 export async function* streamSupportAnswer(
   messages: SupportMessage[],
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  { requireComplete = false }: { requireComplete?: boolean } = {},
 ): AsyncGenerator<string> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || messages.length === 0) return;
@@ -76,6 +76,7 @@ export async function* streamSupportAnswer(
   const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   const onAbort = () => controller.abort();
   signal?.addEventListener("abort", onAbort);
+  if (signal?.aborted) controller.abort();
 
   try {
     const res = await fetch(`${GEMINI_STREAM_ENDPOINT}?alt=sse&key=${apiKey}`, {
@@ -88,11 +89,12 @@ export async function* streamSupportAnswer(
         generationConfig: { maxOutputTokens: 800 },
       }),
     });
-    if (!res.ok || !res.body) return;
+    if (!res.ok || !res.body) throw new Error("Support provider unavailable");
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = "";
+    let finished = false;
 
     while (true) {
       const { done, value } = await reader.read();
@@ -104,35 +106,42 @@ export async function* streamSupportAnswer(
       const events = buffer.split(/\r?\n\r?\n/);
       buffer = events.pop() ?? "";
       for (const evt of events) {
-        const text = extractSseText(evt);
-        if (text) yield text;
+        const part = extractSseText(evt, requireComplete);
+        finished ||= part.finished;
+        if (part.text) yield part.text;
       }
     }
-    const tail = extractSseText(buffer);
-    if (tail) yield tail;
-  } catch {
-    return; // timeout, network, disconnect, or parse error — all non-fatal
+    const tail = extractSseText(buffer, requireComplete);
+    finished ||= tail.finished;
+    if (tail.text) yield tail.text;
+    if (requireComplete && (!finished || controller.signal.aborted)) throw new Error("Incomplete support response");
+  } catch (error) {
+    if (requireComplete) throw error;
+    return;
   } finally {
+    controller.abort();
     clearTimeout(timeout);
     signal?.removeEventListener("abort", onAbort);
   }
 }
 
 /** Pulls the incremental text out of one Gemini SSE `data:` event. */
-function extractSseText(event: string): string {
+function extractSseText(event: string, strict = false): { text: string; finished: boolean } {
   const line = event.split(/\r?\n/).find((l) => l.startsWith("data:"));
-  if (!line) return "";
+  if (!line) return { text: "", finished: false };
   const payload = line.slice(line.indexOf(":") + 1).trim();
-  if (!payload || payload === "[DONE]") return "";
+  if (!payload || payload === "[DONE]") return { text: "", finished: false };
   try {
     const json = JSON.parse(payload) as {
-      candidates?: { content?: { parts?: { text?: unknown }[] } }[];
+      candidates?: { content?: { parts?: { text?: unknown }[] }; finishReason?: string }[];
     };
     const parts = json.candidates?.[0]?.content?.parts ?? [];
-    return parts
+    const text = parts
       .map((p) => (typeof p?.text === "string" ? p.text : ""))
       .join("");
+    return { text, finished: ["STOP", "MAX_TOKENS"].includes(json.candidates?.[0]?.finishReason ?? "") };
   } catch {
-    return "";
+    if (strict) throw new Error("Invalid support response");
+    return { text: "", finished: false };
   }
 }

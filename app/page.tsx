@@ -45,7 +45,7 @@ export default async function Home() {
         <SellCta />
       </main>
       <Footer />
-      <SupportChatWidget isAuthenticated={Boolean(user)} />
+      <SupportChatWidget userId={user?.id ?? null} />
     </>
   );
 }

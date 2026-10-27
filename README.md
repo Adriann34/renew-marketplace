@@ -58,3 +58,30 @@ Run `npm test` for the offline tests. Browse query integration tests also run wh
 database for these tests. Apply migrations to that isolated database by setting both
 `DATABASE_URL` and `DIRECT_URL` for `npx prisma migrate deploy`, then run
 `BROWSE_TEST_DATABASE_URL=postgresql://USER@localhost:5432/renew_browse_test npm test`.
+
+## Support conversation lifecycle
+
+Support transcripts belong to the authenticated account and live in Postgres.
+The widget resumes the most recently messaged chat when it is less than 24 hours
+old; otherwise it opens a fresh chat. History lets users continue older chats.
+Every accepted question or completed answer resets only that conversation's
+clock. Opening, reading, and starting a different chat do not extend its lifetime.
+
+Each conversation expires 30 days after its own last message. The server stops
+serving it immediately at expiry; the hourly `renew-support-retention` Supabase
+Cron job physically deletes it and its turns. Account deletion cascades immediately.
+The migration enables `pg_cron` and registers the job on Supabase, while skipping
+scheduler setup on plain PostgreSQL and Prisma shadow databases. Verify the job
+is active and its runs succeed in Supabase **Integrations → Cron** after rollout.
+The application does not import legacy browser transcripts because they have no
+verified owner. Interrupted answers remain retryable and are excluded from AI context.
+
+For support investigations, authorized database operators can inspect
+`SupportConversation` by `userId`, then `SupportTurn` by `conversationId`; the
+browser has no direct table access. The 30-day deletion applies to live database
+records; backups remain subject to the database provider's backup retention.
+
+Support integration tests require a migrated, isolated local database named
+`renew_support_test`. Set `SUPPORT_TEST_DATABASE_URL` to its connection URL and run
+`npm test`. They exercise the real Prisma queries and HTTP handlers with controlled
+authentication and AI fixtures. Never point fixture tests at the app's database.

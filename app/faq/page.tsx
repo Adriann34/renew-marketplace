@@ -32,7 +32,7 @@ export default async function FaqPage() {
           </div>
       </PageShell>
 
-      <SupportChatWidget isAuthenticated={Boolean(user)} />
+      <SupportChatWidget userId={user?.id ?? null} />
     </>
   );
 }

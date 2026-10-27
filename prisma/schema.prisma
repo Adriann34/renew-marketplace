@@ -57,6 +57,7 @@ model User {
   buyerConversations  Conversation[] @relation("BuyerConversations")
   sellerConversations Conversation[] @relation("SellerConversations")
   messages            Message[]
+  supportConversations SupportConversation[]
 }
 
 model Listing {
@@ -116,10 +117,9 @@ model ListingPhoto {
   createdAt DateTime  @default(now())
 }
 
-// RLS is enabled on Conversation + Message only (see the chat migration for
-// the policies) so Realtime subscriptions can only stream rows the signed-in
-// user is actually part of. Every other table has no RLS and relies entirely
-// on server-side auth checks in Server Actions instead.
+// Marketplace RLS policies authorize participant-only Realtime subscriptions.
+// Support tables below use RLS with no browser access; their server handlers
+// verify ownership separately, as do the app's other Server Actions.
 model Conversation {
   id               String    @id @default(uuid())
   listingId        String
@@ -167,4 +167,39 @@ model Message {
   createdAt      DateTime     @default(now())
 
   @@index([conversationId, createdAt])
+}
+
+enum SupportTurnStatus {
+  PENDING
+  COMPLETE
+  FAILED
+}
+
+// Support transcripts are server-owned; neither table is exposed to browser clients.
+model SupportConversation {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  createdAt     DateTime      @default(now())
+  lastMessageAt DateTime      @default(now())
+  turns         SupportTurn[]
+
+  @@index([userId, lastMessageAt, id])
+  @@index([lastMessageAt])
+}
+
+model SupportTurn {
+  id             String              @id // client request UUID, used for idempotent retries
+  conversationId String
+  conversation   SupportConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  question       String
+  answer         String?
+  status         SupportTurnStatus   @default(PENDING)
+  createdAt      DateTime            @default(now())
+  startedAt      DateTime            @default(now()) // also identifies the generation attempt
+  completedAt    DateTime?
+
+  @@index([conversationId, createdAt, id])
+  // A partial unique index in the migration permits only one PENDING turn per chat.
 }
