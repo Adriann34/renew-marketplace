@@ -33,6 +33,7 @@ export function CreateListingForm({
 }) {
   const [state, formAction, isPending] = useActionState(createListingAction, initialState);
   const [photos, setPhotos] = useState<PhotosState>(emptyPhotosState);
+  const [publishAttempted, setPublishAttempted] = useState(false);
   const [fields, setFields] = useState<PreviewFields>({
     title: "",
     price: "",
@@ -97,7 +98,10 @@ export function CreateListingForm({
   }
 
   return (
-    <form action={formAction}>
+    <form action={formAction} onSubmit={(event) => {
+      setPublishAttempted(true);
+      if (!photos.condition.length) event.preventDefault();
+    }}>
       <input type="hidden" name="category" value={category} />
 
       {state.error && (
@@ -135,17 +139,14 @@ export function CreateListingForm({
                 {autofilling ? <Spinner size={14} /> : <span aria-hidden>✦</span>}
                 {autofilling ? "Reading photos…" : "AI autofill"}
               </Button>
-              {!allCategoriesFilled && <p className="text-[12px] text-ink-dim">Add a photo to each proof category to enable AI autofill.</p>}
               {autofillError && <p role="alert" className="text-[12px] text-danger">{autofillError}</p>}
             </div>}
           </ListingDiagnostics>
 
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <p className={`text-[13px] ${photos.condition.length ? "text-pass font-medium" : "text-ink-dim"}`}>
-              {photos.condition.length
-                ? "Looks good — condition photos attached."
-                : "Add at least one condition photo to publish."}
-            </p>
+            {publishAttempted && !photos.condition.length && (
+              <p role="alert" className="text-[13px] text-danger">Add at least one condition photo.</p>
+            )}
             <div className="flex gap-3 ml-auto">
               <Button variant="secondary"
                 disabled
@@ -155,6 +156,7 @@ export function CreateListingForm({
               </Button>
               <Button
                 type="submit"
+                onClick={() => setPublishAttempted(true)}
                 disabled={isPending || autofilling}
               >
                 {isPending && <Spinner size={16} />}

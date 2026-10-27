@@ -27,12 +27,17 @@ export function ListingBasics({ category, fields, onChange, description = "", ed
     <div>
       <FieldLabel htmlFor="price">Price</FieldLabel>
       <div className="flex gap-2">
-        <Select name="currency" aria-label="Currency" value={fields.currency} onChange={(e) => onChange({ currency: e.target.value })} className="ui-input-currency">
-          {CURRENCIES.map((currency) => <option key={currency.code} value={currency.code}>{currency.code}</option>)}
-        </Select>
+        <div className="relative shrink-0">
+          <Select name="currency" aria-label="Currency" value={fields.currency} onChange={(e) => onChange({ currency: e.target.value })} className="ui-input-currency appearance-none pr-9">
+            {CURRENCIES.map((currency) => <option key={currency.code} value={currency.code}>{currency.code}</option>)}
+          </Select>
+          <svg className="absolute right-3.5 top-1/2 -translate-y-1/2 w-3 h-3 pointer-events-none text-ink" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
         <Input id="price" name="price" type="number" min={0} required defaultValue={fields.price} placeholder="1450" onChange={(e) => onChange({ price: e.target.value })} />
       </div>
-      {!editing && <p className="text-[12px] text-ink-dim mt-2 leading-relaxed">Set the price in your own currency. Buyers see a converted estimate alongside your asking price.</p>}
+      {!editing && <p className="text-[12px] text-ink-dim mt-2 leading-relaxed">Buyers will see an estimated price in their currency.</p>}
     </div>
     <div>
       <FieldLabel htmlFor="spec">Spec</FieldLabel>
@@ -53,7 +58,7 @@ export function ListingBasics({ category, fields, onChange, description = "", ed
     </fieldset>
     <div>
       <FieldLabel htmlFor="description">Description</FieldLabel>
-      <Textarea id="description" name="description" required maxLength={2000} rows={5} defaultValue={description} placeholder="What’s included, why you’re selling, and anything the next owner should know." />
+      <Textarea id="description" name="description" required maxLength={2000} rows={5} defaultValue={description} placeholder="Add a description" />
     </div>
   </section>;
 }
@@ -78,7 +83,7 @@ export function ListingDiagnostics({ category, fields, onChange, children }: Lis
       <Input id="wattageDraw" name="wattageDraw" type="number" min={0} required value={fields.wattageDraw} placeholder="0 if not applicable" onChange={(e) => onChange({ wattageDraw: e.target.value })} />
     </div>}
     <div className="flex items-center justify-between gap-6">
-      <div><label htmlFor="bootVerified" className="ui-label mb-1">Boots and POSTs reliably</label><p className="text-[12px] text-ink-dim leading-relaxed">Confirms this part powers on and is recognized by the system every time.</p></div>
+      <div><label htmlFor="bootVerified" className="ui-label mb-1">Boots and POSTs reliably</label></div>
       <label className="relative inline-flex items-center w-10 h-5.5 shrink-0 cursor-pointer">
         <input id="bootVerified" type="checkbox" name="bootVerified" checked={fields.bootVerified} onChange={(e) => onChange({ bootVerified: e.target.checked })} className="peer sr-only" />
         <span className="switch-track" /><span className="switch-thumb" />

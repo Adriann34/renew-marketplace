@@ -390,7 +390,7 @@ export function PhotoWorkspace({
       )}
 
       <p className="text-[11px] text-ink-dim mt-3">
-        {meta.hint} · {SUPPORTED_LABEL} · up to {formatMb(MAX_PHOTO_BYTES)} each
+        {SUPPORTED_LABEL} · up to {formatMb(MAX_PHOTO_BYTES)} each
       </p>
 
       <input

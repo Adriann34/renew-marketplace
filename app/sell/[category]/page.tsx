@@ -30,7 +30,7 @@ export default async function SellCategoryPage({
         <Link href="/sell" className="market-text-link mb-6">
           ← Change category
         </Link>
-      <PageHeading eyebrow="For sellers" title={`List your ${categoryLabels[category]}`} description="Share the details, add your photos, and help your hardware find its next home." />
+      <PageHeading title={`List your ${categoryLabels[category]}`} description="Add photos and details to create your listing." />
 
         <CreateListingForm
           category={category}

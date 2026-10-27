@@ -3,13 +3,7 @@ import Link from "next/link";
 import { PageShell } from "@/components/ui/Page";
 import { PageHeading } from "@/components/ui/PageHeading";
 import { createClient } from "@/lib/supabase/server";
-import { categoryOrder, categoryLabels, categoryDiagnosticTier } from "@/lib/category";
-
-const TIER_BLURB = {
-  full: "Full diagnostic report — benchmark score, draw under load, boot verified.",
-  "wattage-boot": "Draw under load + boot verified.",
-  "boot-only": "Boot verified.",
-} as const;
+import { categoryOrder, categoryLabels } from "@/lib/category";
 
 export default async function SellPage() {
   const supabase = await createClient();
@@ -19,9 +13,9 @@ export default async function SellPage() {
   if (!user) redirect("/signin?next=/sell");
 
   return (
-    <PageShell>
+    <PageShell className="sell-category-page">
 
-      <PageHeading eyebrow="For sellers" title="What are you selling?" description="Choose your hardware category. We’ll tailor the listing details and photo requirements to your part." />
+      <PageHeading title="What are you selling?" description="Select a hardware category to continue" />
 
         <div className="category-choices">
           {categoryOrder.map((category) => (
@@ -33,10 +27,8 @@ export default async function SellPage() {
               <div><h2>
                 {categoryLabels[category]}
               </h2>
-              <p className="category-choice-description">
-                {TIER_BLURB[categoryDiagnosticTier[category]]}
-              </p></div>
               <span className="category-choice-arrow" aria-hidden="true">↗</span>
+              </div>
             </Link>
           ))}
         </div>
