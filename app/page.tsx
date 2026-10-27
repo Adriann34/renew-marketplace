@@ -8,9 +8,15 @@ import { SellCta } from "@/components/SellCta";
 import { Footer } from "@/components/Footer";
 import { ListingCard } from "@/components/ListingCard";
 import { getListings } from "@/lib/listings";
+import { createClient } from "@/lib/supabase/server";
+import { SupportChatWidget } from "@/components/support/SupportChatWidget";
 
 export default async function Home() {
-  const listings = await getListings(6);
+  const supabase = await createClient();
+  const [listings, { data: { user } }] = await Promise.all([
+    getListings(6),
+    supabase.auth.getUser(),
+  ]);
 
   return (
     <>
@@ -39,6 +45,7 @@ export default async function Home() {
         <SellCta />
       </main>
       <Footer />
+      <SupportChatWidget isAuthenticated={Boolean(user)} />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import "server-only";
+import { GEMINI_MODEL } from "@/lib/aiModel";
 import { buildKnowledgeBase, SUPPORT_EMAIL } from "@/lib/supportKnowledge";
 import type { SupportMessage } from "@/lib/supportChat";
 
@@ -17,7 +18,6 @@ export type { SupportMessage, SupportRole } from "@/lib/supportChat";
  * throws.
  */
 
-const GEMINI_MODEL = "gemini-3.1-flash-lite";
 const GEMINI_STREAM_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent`;
 const REQUEST_TIMEOUT_MS = 30_000;
 
@@ -85,7 +85,7 @@ export async function* streamSupportAnswer(
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: buildSystemInstruction() }] },
         contents,
-        generationConfig: { temperature: 0.3, maxOutputTokens: 800 },
+        generationConfig: { maxOutputTokens: 800 },
       }),
     });
     if (!res.ok || !res.body) return;

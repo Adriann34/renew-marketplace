@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MAX_SUPPORT_MESSAGE_CHARS } from "@/lib/supportChat";
 
 /**
- * Sticky bottom-right support chatbot for the FAQ page (Messenger-style).
+ * Sticky bottom-right support chatbot for the landing and FAQ pages (Messenger-style).
  *
  * A floating launcher toggles a chat panel. Only authenticated users can chat;
  * everyone else sees a sign-in prompt (the API route enforces this too — this is
@@ -24,9 +24,10 @@ const STORAGE_KEY = "renew-support-chat";
 
 const WELCOME: ChatMessage = {
   role: "assistant",
-  content:
-    "Hi! I'm Renew's support assistant. Ask me anything about buying, selling, grading, returns, or how the marketplace works.",
+  content: "Hi! How can I help you?",
 };
+
+const LEGACY_WELCOME = "Hi! I'm Renew's support assistant. Ask me anything about buying, selling, grading, returns, or how the marketplace works.";
 
 export function SupportChatWidget({ isAuthenticated }: { isAuthenticated: boolean }) {
   const [open, setOpen] = useState(false);
@@ -45,7 +46,13 @@ export function SupportChatWidget({ isAuthenticated }: { isAuthenticated: boolea
       const saved = sessionStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as ChatMessage[];
-        if (Array.isArray(parsed) && parsed.length > 0) setMessages(parsed);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const first = parsed[0];
+          if (first?.role === "assistant" && (first.content === LEGACY_WELCOME || first.content === WELCOME.content)) {
+            parsed[0] = WELCOME;
+          }
+          setMessages(parsed);
+        }
       }
     } catch {
       // ignore corrupt/blocked storage
@@ -161,6 +168,7 @@ export function SupportChatWidget({ isAuthenticated }: { isAuthenticated: boolea
     <>
       {/* Launcher — sticky/fixed bottom-right */}
       <Button
+        size="icon"
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Close support chat" : "Open support chat"}
@@ -184,7 +192,7 @@ export function SupportChatWidget({ isAuthenticated }: { isAuthenticated: boolea
             </div>
             <div className="min-w-0">
               <p className="font-display font-medium text-[15px] leading-tight">Renew Support</p>
-              <p className="font-body text-[11px] text-ink-dim leading-tight">AI assistant · replies instantly</p>
+              <p className="font-body text-[11px] text-ink-dim leading-tight">AI assistant</p>
             </div>
             <button
               type="button"
@@ -268,7 +276,7 @@ function TypingDots() {
 function ChatIcon({ small }: { small?: boolean }) {
   const s = small ? 18 : 24;
   return (
-    <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg className="shrink-0" width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
     </svg>
   );
@@ -276,7 +284,7 @@ function ChatIcon({ small }: { small?: boolean }) {
 
 function CloseIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg className="shrink-0" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>

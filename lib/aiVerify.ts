@@ -1,4 +1,5 @@
 import "server-only";
+import { GEMINI_MODEL } from "@/lib/aiModel";
 import type { PhotoKind } from "@prisma/client";
 import { compressImage } from "@/lib/image";
 
@@ -22,7 +23,6 @@ import { compressImage } from "@/lib/image";
  * request fails, or the response is malformed — callers must degrade gracefully.
  */
 
-const GEMINI_MODEL = "gemini-3.1-flash-lite";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const REQUEST_TIMEOUT_MS = 25_000;
 
@@ -151,7 +151,7 @@ async function callGemini(parts: GeminiPart[], responseSchema: object): Promise<
       signal: controller.signal,
       body: JSON.stringify({
         contents: [{ parts }],
-        generationConfig: { responseMimeType: "application/json", responseSchema, temperature: 0 },
+        generationConfig: { responseMimeType: "application/json", responseSchema },
       }),
     });
     if (!res.ok) return null;

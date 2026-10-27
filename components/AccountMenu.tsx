@@ -14,7 +14,7 @@ export function AccountMenu() {
     <div className="relative group hidden sm:block">
       <Link
         href="/account"
-        className="inline-flex items-center gap-1 text-[13px] text-ink-dim group-hover:text-ink transition-colors py-2"
+        className="inline-flex items-center gap-1 text-ink-dim group-hover:text-ink transition-colors py-2"
       >
         Account
         <svg
