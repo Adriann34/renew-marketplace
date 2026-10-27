@@ -51,3 +51,10 @@ npm run dev
 Open [localhost:3000](http://localhost:3000). To add sample sellers and listings, run `npx prisma db seed`. Seed images are served from `public/demo/`; the seed does not upload them to Storage.
 
 For other workflows, use `npm run lint`, `npm run build`, or `npm run prisma:studio`. The build script applies pending Prisma migrations before building.
+
+Run `npm test` for the offline tests. Browse query integration tests also run when
+`BROWSE_TEST_DATABASE_URL` points to a migrated local PostgreSQL database named
+`renew_browse_test`. They create and remove their own fixtures; never use the app's
+database for these tests. Apply migrations to that isolated database by setting both
+`DATABASE_URL` and `DIRECT_URL` for `npx prisma migrate deploy`, then run
+`BROWSE_TEST_DATABASE_URL=postgresql://USER@localhost:5432/renew_browse_test npm test`.

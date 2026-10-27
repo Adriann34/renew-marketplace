@@ -91,6 +91,9 @@ model Listing {
   savedBy         SavedListing[]
   conversations   Conversation[]
   createdAt       DateTime       @default(now())
+
+  @@index([status, createdAt, id])
+  @@index([status, category, createdAt, id])
 }
 
 model SavedListing {

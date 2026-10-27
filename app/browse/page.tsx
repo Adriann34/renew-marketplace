@@ -1,49 +1,26 @@
-import { PageShell } from "@/components/ui/Page";
+import { PageContent } from "@/components/ui/Page";
 import { BrowseView } from "@/components/browse/BrowseView";
-import { getListings } from "@/lib/listings";
-import { categoryOrder } from "@/lib/category";
-import type { Category } from "@prisma/client";
-
-function countBy<T extends string>(values: T[]): Partial<Record<T, number>> {
-  const counts: Partial<Record<T, number>> = {};
-  for (const v of values) counts[v] = (counts[v] ?? 0) + 1;
-  return counts;
-}
+import { CurrencyProvider } from "@/components/CurrencyProvider";
+import { getBrowseListings } from "@/lib/browseListings";
+import { browseUrl, parseBrowseParams, type BrowseParams } from "@/lib/browseParams";
+import { getRates } from "@/lib/exchangeRates";
+import { getViewerCurrency } from "@/lib/viewerCurrency";
 
 export default async function BrowsePage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; q?: string }>;
+  searchParams: Promise<BrowseParams>;
 }) {
-  const { category, q } = await searchParams;
-  const listings = await getListings();
-  const returnParams = new URLSearchParams();
-  if (category) returnParams.set("category", category);
-  if (q) returnParams.set("q", q);
-  const returnTo = `/browse${returnParams.size ? `?${returnParams}` : ""}`;
-
-  // Category tab counts are always totals across the whole dataset — the
-  // sidebar's grade/location facet counts, by contrast, are scoped to the
-  // selected tab and are computed client-side in BrowseView.
-  const categoryCounts = countBy(listings.map((l) => l.category)) as Partial<Record<Category, number>>;
-
-  const requestedCategory = category?.toUpperCase();
-  const initialCategory =
-    requestedCategory && categoryOrder.includes(requestedCategory as Category)
-      ? (requestedCategory as Category)
-      : "all";
+  const [params, viewer, rates] = await Promise.all([searchParams, getViewerCurrency(), getRates()]);
+  const state = parseBrowseParams(params, viewer.displayCurrency);
+  const results = await getBrowseListings(state, rates);
+  state.page = results.page;
 
   return (
-    <PageShell className="browse-page">
-      <BrowseView
-        listings={listings}
-        categoryOrder={categoryOrder}
-        categoryCounts={categoryCounts}
-        totalCount={listings.length}
-        initialCategory={initialCategory}
-        initialSearch={q ?? ""}
-        returnTo={returnTo}
-      />
-    </PageShell>
+    <PageContent className="browse-page">
+      <CurrencyProvider key={state.currency} initialDisplayCurrency={state.currency} rates={rates} canPersist={false}>
+        <BrowseView state={state} results={results} returnTo={browseUrl(state)} />
+      </CurrencyProvider>
+    </PageContent>
   );
 }

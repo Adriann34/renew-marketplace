@@ -4,9 +4,7 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 // Global navbar search. It doesn't filter in place — on submit it sends the
-// query to /browse, where BrowseView reads the `q` param and filters listings
-// live. Keeping the actual filtering in one place (BrowseView) avoids two
-// competing search implementations.
+// query to /browse, where the server applies the same search as the browse input.
 //
 // On /browse itself the page already has its own prominent live-filtering
 // search bar, so this global one would just be a redundant second box —

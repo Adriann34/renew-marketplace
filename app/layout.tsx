@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { CurrencyProvider } from "@/components/CurrencyProvider";
 import { getRates } from "@/lib/exchangeRates";
-import { CURRENCY_COOKIE, resolveDisplayCurrency } from "@/lib/currency";
-import { createClient } from "@/lib/supabase/server";
-import { prisma } from "@/lib/prisma";
+import { getViewerCurrency } from "@/lib/viewerCurrency";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,36 +27,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // Resolve which currency to show prices in, and load approximate FX rates.
-  //
-  // Signed-in users: their DB preference is authoritative and follows them across
-  // devices (the cookie is ignored, so a stale cookie on another device can't
-  // override a preference set elsewhere). Anonymous visitors: the per-device cookie,
-  // then geolocation. Everything falls back to geo → USD.
-  //
-  // Vercel injects the visitor's geolocated country at the edge; absent locally (dev)
-  // and for unknown IPs, so those resolve to USD unless a preference/cookie is set.
-  const country = (await headers()).get("x-vercel-ip-country");
-
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const signedIn = !!user;
-
-  let displayCurrency: string;
-  if (user) {
-    const preferred = await prisma.user
-      .findUnique({ where: { id: user.id }, select: { preferredCurrency: true } })
-      .then((u) => u?.preferredCurrency ?? null)
-      .catch(() => null);
-    displayCurrency = resolveDisplayCurrency({ preferred, country });
-  } else {
-    const cookieCurrency = (await cookies()).get(CURRENCY_COOKIE)?.value ?? null;
-    displayCurrency = resolveDisplayCurrency({ cookie: cookieCurrency, country });
-  }
-
-  const rates = await getRates();
+  const [{ displayCurrency, signedIn }, rates] = await Promise.all([getViewerCurrency(), getRates()]);
 
   return (
     <html lang="en" suppressHydrationWarning>

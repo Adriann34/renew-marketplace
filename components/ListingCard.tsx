@@ -3,10 +3,10 @@ import { Price } from "@/components/Price";
 import { ConditionBadge } from "@/components/ConditionBadge";
 import { ListingImage } from "@/components/listing/ListingImage";
 import { categoryLabels } from "@/lib/category";
-import type { ListingWithRelations } from "@/lib/listings";
+import type { BrowseListing } from "@/lib/browseListings";
 
 export function ListingCard({ listing, view = "grid", returnTo }: {
-  listing: ListingWithRelations;
+  listing: BrowseListing;
   view?: "grid" | "list";
   returnTo: string;
 }) {
